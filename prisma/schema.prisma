@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Cart {
+  id            Int            @id @default(autoincrement()) @db.SmallInt
+  id_user       Int            @db.SmallInt
+  cart_quantity Int            @db.SmallInt
+  cart_price    Int            @db.SmallInt
+  quantity_prod Int            @db.SmallInt
+  Utilisateur   Utilisateur    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_Cart_id_user_fkey")
+  id_prod_cart  id_prod_cart[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Category {
+  id         Int          @id @default(autoincrement()) @db.SmallInt
+  name       String
+  image      String?
+  Product    Product[]
+  id_sub_cat id_sub_cat[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Product {
+  id                     Int            @id @unique @default(autoincrement()) @db.SmallInt
+  product_name           String         @db.VarChar
+  product_image          String?
+  product_description    String
+  product_price          Float          @db.Real
+  is_sale                Boolean        @default(false)
+  sale_percent           String?
+  product_categoryid     Int            @db.SmallInt
+  product_subcategory_id Int?           @db.SmallInt
+  Category               Category       @relation(fields: [product_categoryid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_Product_product_categoryid_fkey")
+  Sub_category           Sub_category?  @relation(fields: [product_subcategory_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_Product_product_subcategory_id_fkey")
+  id_prod_cart           id_prod_cart[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Sub_category {
+  id         Int          @id @default(autoincrement()) @db.SmallInt
+  name       String
+  image      String?
+  Product    Product[]
+  id_sub_cat id_sub_cat[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Utilisateur {
+  id       Int    @id @default(autoincrement()) @db.SmallInt
+  name     String
+  password String @db.VarChar
+  email    String @db.VarChar
+  Cart     Cart[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model id_prod_cart {
+  id      Int     @id @default(autoincrement()) @db.SmallInt
+  id_prod Int     @db.SmallInt
+  id_cart Int     @db.SmallInt
+  Cart    Cart    @relation(fields: [id_cart], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_id_prod_cart_id_cart_fkey")
+  Product Product @relation(fields: [id_prod], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_id_prod_cart_id_prod_fkey")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model id_sub_cat {
+  id           Int          @id @default(autoincrement()) @db.SmallInt
+  id_cat       Int          @db.SmallInt
+  id_sub_cat   Int          @db.SmallInt
+  Category     Category     @relation(fields: [id_cat], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_id_sub_cat_id_cat_fkey")
+  Sub_category Sub_category @relation(fields: [id_sub_cat], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_id_sub_cat_id_sub_cat_fkey")
+}
