@@ -41,6 +41,7 @@ model Product {
   sale_percent           String?
   product_categoryid     Int            @db.SmallInt
   product_subcategory_id Int?           @db.SmallInt
+  poids                  Int?           @db.SmallInt
   Category               Category       @relation(fields: [product_categoryid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_Product_product_categoryid_fkey")
   Sub_category           Sub_category?  @relation(fields: [product_subcategory_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_Product_product_subcategory_id_fkey")
   id_prod_cart           id_prod_cart[]
@@ -59,11 +60,12 @@ model Sub_category {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Utilisateur {
-  id       Int    @id @default(autoincrement()) @db.SmallInt
-  name     String
-  password String @db.VarChar
-  email    String @db.VarChar
-  Cart     Cart[]
+  id           Int    @id @default(autoincrement()) @db.SmallInt
+  name         String
+  password     String @db.VarChar
+  email        String @db.VarChar
+  numero_phone Int?
+  Cart         Cart[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
