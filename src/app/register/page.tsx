@@ -1,10 +1,18 @@
 'use client'
-import React, {useState} from "react";
+import React, {FormEvent, useState} from "react";
 import {CustomInput} from "@/components/input";
 import Link from "next/link";
 import {Toast_error} from "@/components/toast_error";
 import Image from "next/image";
 import {Toast_success} from "@/components/toast_success";
+
+interface Form {
+    username: string
+    email: string
+    password: string
+    confirm_password: string
+    numero_phone: string
+}
 
 export default function Page() {
     const [formData, setFormData] = useState({
@@ -14,19 +22,32 @@ export default function Page() {
         confirm_password: "",
         numero_phone: ""
     })
-    const [errors, setErrors] = useState({})
+    const [errors, setErrors] = useState<Form>({
+        confirm_password: "",
+        email: "",
+        numero_phone: "",
+        password: "",
+        username: ""
+    })
     const [errorMessage, setErrorMessage] = useState("")
     const [successMessage, setSuccessMessage] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-    const onChange = (e) => {
+    const onChange = (e: { target: HTMLInputElement }) => {
         setFormData({...formData, [e.target.name]: e.target.value})
         setErrors({...errors, [e.target.name]: ""})
     }
     const validateForm = () => {
         const {username, email, password, confirm_password, numero_phone} = formData;
-        const newErrors = {};
+        // @ts-ignore
+        const newErrors: {
+            username: string
+            email: string
+            password: string
+            confirm_password: string
+            numero_phone: string
+        } = {};
         if (username.indexOf(" ") >= 0) {
             newErrors.username = "Le nom d'utilisateur ne peut pas contenir d'espace."
         }
@@ -58,7 +79,7 @@ export default function Page() {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     }
-    const formHandler = async (e) => {
+    const formHandler = async (e: FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
             try {
@@ -81,16 +102,14 @@ export default function Page() {
         setErrorMessage("");
         setSuccessMessage("");
     }
-    const clickHandler = (e) => {
-        if (e.target.alt === 'show-password') {
-            setShowPassword(!showPassword)
+    const clickHandler = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+        const target = e.target as HTMLImageElement;
+        if (target.alt === 'show-password') {
+            setShowPassword(!showPassword);
+        } else if (target.alt === 'show-confirm_password') {
+            setShowConfirmPassword(!showConfirmPassword);
         }
-        if (e.target.alt === 'show-confirm_password') {
-            setShowConfirmPassword(!showConfirmPassword)
-        } else {
-            return;
-        }
-    }
+    };
     return (
         <main className="relative h-dvh flex justify-center items-center">
             <title>Inscription</title>

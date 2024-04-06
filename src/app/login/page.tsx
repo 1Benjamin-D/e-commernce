@@ -1,34 +1,43 @@
 'use client'
-import React, {useState} from "react";
+import React, {FormEvent, useState} from "react";
+import {CustomInput} from "@/components/input";
+import Link from "next/link";
+import {Toast_error} from "@/components/toast_error";
+import {Toast_success} from "@/components/toast_success";
+import Image from "next/image";
+
+interface Form {
+    username: string
+    password: string
+}
 
 export default function Page() {
     const [formData, setFormData] = useState({
         username: "",
         password: ""
     })
-    const [errors, setErrors] = useState({})
+    const [errors, setErrors] = useState<Form>({password: "", username: ""})
     const [errorMessage, setErrorMessage] = useState("")
     const [successMessage, setSuccessMessage] = useState("")
-    const onChange = (e) => {
+    const [showPassword, setShowPassword] = useState(false)
+    const onChange = (e: { target: HTMLInputElement }) => {
         setFormData({...formData, [e.target.name]: e.target.value})
         setErrors({...errors, [e.target.name]: ""})
     }
-    const formHandler = async (e) => {
+    const formHandler = async (e: FormEvent) => {
         e.preventDefault();
-        try{
+        try {
             const response = await fetch('/api/login', {
                 method: 'POST',
                 body: JSON.stringify(formData)
             })
             const data = await response.json();
-            if(data.success){
+            if (data.success) {
                 setSuccessMessage(data.message)
-            }
-            else{
+            } else {
                 setErrorMessage(data.message)
             }
-        }
-        catch(error){
+        } catch (error) {
             console.error("Erreur lors de l'envoie du formulaire :", error)
         }
     }
@@ -36,6 +45,12 @@ export default function Page() {
         setErrorMessage("");
         setSuccessMessage("");
     }
+    const clickHandler = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+        const target = e.target as HTMLImageElement;
+        if (target.alt === 'show-password') {
+            setShowPassword(!showPassword);
+        }
+    };
     return (
         <main className="h-dvh flex justify-center items-center">
             <title>Connexion</title>
@@ -48,8 +63,14 @@ export default function Page() {
                         <CustomInput type="text" name="username" labelText="Nom d'utilisateur" error={errors.username}
                                      onChange={onChange}
                                      value={formData.username}/>
-                        <CustomInput type="password" name="password" labelText="Mot de passe" value={formData.password}
-                                     onChange={onChange} error={errors.password}/>
+                        <CustomInput labelText="Mot de passe" name="password"
+                                     type={`${!showPassword ? 'password' : 'text'}`} onChange={onChange}
+                                     value={formData.password} error={errors.password}/>
+                        <Image alt="show-password"
+                               src={`${!showPassword ? '../images/eye.svg' : '../images/eye-slash.svg'}`}
+                               width="100" height="0"
+                               className="absolute h-7 w-auto top-[51px] right-8 cursor-pointer"
+                               onClick={clickHandler}></Image>
                         <input type="submit" value="Connexion"
                                className="bg-custom_orange text-white text-lg p-3 rounded-2xl cursor-pointer"/>
                         <p className="text-lg">Pas de compte ? <Link href="/register"><span
@@ -65,8 +86,3 @@ export default function Page() {
         </main>
     )
 }
-
-import {CustomInput} from "@/components/input";
-import Link from "next/link";
-import {Toast_error} from "@/components/toast_error";
-import {Toast_success} from "@/components/toast_success";
