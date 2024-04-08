@@ -5,12 +5,14 @@ export interface Utilisateur {
     name : string
     password : string
     email : string
+    numero_phone : number | null;
 }
 
 export default function Utilisateur() {
   // Déclaration des états pour stocker les données de l'API.
   const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
-  const name = "Gabinks"; // TODO : Change value
+  const name = `Gabinks`; // TODO : Change value
+
   // Utilisation de useEffect pour charger les données au montage du composant.
   useEffect(() => {
     async function fetchData() {
@@ -27,13 +29,15 @@ export default function Utilisateur() {
 
   return (
     <div>
-      {utilisateur && /* {utilisateur.map((utilisateur) => ( */
+      {utilisateur &&
         <div key={utilisateur.id}>
           <p>{utilisateur.name}</p>
         </div>
         }
-      {/* ))} */}
     </div>
+    
   );
+  
+  
 }
     

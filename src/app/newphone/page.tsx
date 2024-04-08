@@ -1,5 +1,7 @@
 "use client";
 
+import Phone from "@/components/Phone";
+
 export default function NewEmail() {
   const handleEditClick = (path: string) => {
     // Modifier l'URL pour rediriger l'utilisateur
@@ -19,7 +21,7 @@ export default function NewEmail() {
             </label>
             <div className="bg-gradient-to-r from-[#FF5863] via-[#FD8F50] to-[#FFC53E] w-2/3 p-0.5 rounded-lg">
               <p className="py-2 px-3 bg-gray-300 rounded-lg text-center break-words w-60 ">
-                Voila
+                <Phone />
               </p>
             </div>
           </div>

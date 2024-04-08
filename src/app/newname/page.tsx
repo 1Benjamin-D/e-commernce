@@ -1,19 +1,32 @@
 "use client";
 
 import React, { useState } from "react";
+import Utilisateur from "@/components/User";
+
+async function saveChanges(id: any, newName: any) {
+  const response = await fetch('/api/cheminVersVotreEndpoint', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ id: id, name: newName })
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    console.log('Réponse mise à jour:', data);
+  } else {
+    console.error('Erreur lors de la mise à jour');
+  }
+}
+
 
 export default function NewName() {
   const [newName, setNewName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [saveStatus, setSaveStatus] = useState("idle"); 
 
-  const handleEditClick = (path: string) => {
-    if (!/^\D*$/.test(newName)) {
-      setErrorMessage("Le nom ne peut pas contenir de chiffres.");
-      return;
-    }
-
-    window.location.href = `${path}`;
-  };
+  const name = "sasa";
 
   const handleChange = (event: { target: { value: any } }) => {
     const value = event.target.value;
@@ -22,6 +35,24 @@ export default function NewName() {
       setErrorMessage("");
     } else {
       setErrorMessage("Le nom ne peut pas contenir de chiffres.");
+    }
+  };
+
+  const handleEditClick = async () => {
+    if (!/^\D*$/.test(newName)) {
+      setErrorMessage("Le nom ne peut pas contenir de chiffres.");
+      return;
+    }
+
+    try {
+      setSaveStatus("saving");
+      await saveChanges(name, newName); 
+      setSaveStatus("success");
+
+      window.location.href = "/accountmanagement";
+    } catch (error) {
+      setErrorMessage("Erreur lors de la sauvegarde du nom.");
+      setSaveStatus("error");
     }
   };
 
@@ -38,9 +69,9 @@ export default function NewName() {
               Ancien Nom
             </label>
             <div className="bg-gradient-to-r from-[#FF5863] via-[#FD8F50] to-[#FFC53E] w-2/3 p-0.5 rounded-lg">
-              <p className=" py-2 px-3 bg-gray-300 rounded-lg text-center break-words w-60 ">
-                Voila
-              </p>
+              <div className=" py-2 px-3 bg-gray-300 rounded-lg text-center break-words w-60 ">
+                <Utilisateur />
+              </div>
             </div>
           </div>
         </div>
@@ -68,9 +99,16 @@ export default function NewName() {
         {/* Sauvegarde des données */}
 
         <div className="flex flex-col h-full w-full items-center justify-center bg-white space-y-4 p-5 gap-4 rounded-xl">
+          {saveStatus === "saving" && <p>Enregistrement en cours...</p>}
+          {saveStatus === "success" && (
+            <p>Le nom a été mis à jour avec succès.</p>
+          )}
+          {saveStatus === "error" && (
+            <p style={{ color: "red" }}>Erreur lors de la mise à jour.</p>
+          )}
           <div className="bg-gradient-to-r from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-0.5">
             <button
-              onClick={() => handleEditClick("/accountmanagement")}
+              onClick={handleEditClick}
               className="bg-white space-y-4 p-2 gap-4"
             >
               Sauvegarder les modifications
