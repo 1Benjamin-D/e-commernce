@@ -41,7 +41,8 @@ model Product {
   sale_percent           String?
   product_categoryid     Int            @db.SmallInt
   product_subcategory_id Int?           @db.SmallInt
-  poids                  Int?           @db.SmallInt
+  poids                  String?
+  ingredient             String?
   Category               Category       @relation(fields: [product_categoryid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_Product_product_categoryid_fkey")
   Sub_category           Sub_category?  @relation(fields: [product_subcategory_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_Product_product_subcategory_id_fkey")
   id_prod_cart           id_prod_cart[]
