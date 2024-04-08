@@ -18,10 +18,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     let {username, email, password, numero_phone} = JSON.parse(req.body);
 
-    const apiKey = await cryptPassword(process.env.API_KEY!);
-    const apiKeyCorrect = await bcrypt.compare(process.env.API_KEY!, apiKey);
-    if (!apiKeyCorrect) {
-        return res.status(403).json({success: false, message: "Forbidden."});
+    const apiKey = req.headers['api-key']!;
+    if (typeof apiKey === "string") {
+        const apiKeyCorrect = await bcrypt.compare(process.env.API_KEY!, apiKey);
+        if (!apiKeyCorrect) {
+            return res.status(403).json({success: false, message: "Forbidden."});
+        }
     }
 
     if (!validateData(JSON.parse(req.body))) {

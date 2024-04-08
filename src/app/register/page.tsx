@@ -1,10 +1,13 @@
 'use client'
-import React, {FormEvent, useState} from "react";
+import React, {FormEvent, useEffect, useState} from "react";
 import {CustomInput} from "@/components/input";
 import Link from "next/link";
 import {Toast_error} from "@/components/toast_error";
 import Image from "next/image";
 import {Toast_success} from "@/components/toast_success";
+import {cryptPassword} from "@/utils/bcrypt";
+import {useRouter} from "next/navigation";
+import {validatetoken} from "@/utils/validatetoken";
 
 interface Form {
     username: string
@@ -33,7 +36,12 @@ export default function Page() {
     const [successMessage, setSuccessMessage] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
+    const router = useRouter();
+    useEffect(() => {
+        if(validatetoken() && !validatetoken()!.expired){
+            router.push("/");
+        }
+    }, []);
     const onChange = (e: { target: HTMLInputElement }) => {
         setFormData({...formData, [e.target.name]: e.target.value})
         setErrors({...errors, [e.target.name]: ""})
@@ -85,6 +93,9 @@ export default function Page() {
             try {
                 const response = await fetch('/api/register', {
                     method: 'POST',
+                    headers: {
+                        'API-Key': await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
+                    },
                     body: JSON.stringify(formData)
                 })
                 const data = await response.json();
@@ -111,13 +122,13 @@ export default function Page() {
         }
     };
     return (
-        <main className="relative h-dvh flex justify-center items-center">
+        <main className="relative h-fit p-10 flex justify-center items-center">
             <title>Inscription</title>
             <div className="flex flex-col justify-center items-center gap-3">
                 <p className="text-3xl text-custom_red">Inscription</p>
                 <div className="rounded-2xl bg-gradient-to-br from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-[2px]">
                     <form onSubmit={formHandler}
-                          className="flex flex-col items-center gap-5 bg-white p-10 rounded-[calc(1rem-1px)]">
+                          className="flex flex-col items-center gap-3 bg-white p-7 rounded-[calc(1rem-1px)]">
                         <CustomInput labelText="Nom d'utilisateur" name="username" type="text" onChange={onChange}
                                      value={formData.username} error={errors.username}/>
                         <CustomInput labelText="Email" name="email" type="email" onChange={onChange}
@@ -131,7 +142,7 @@ export default function Page() {
                             <Image alt="show-password"
                                    src={`${!showPassword ? '../images/eye.svg' : '../images/eye-slash.svg'}`}
                                    width="100" height="0"
-                                   className="absolute h-7 w-auto top-[51px] right-8 cursor-pointer"
+                                   className="absolute h-7 w-auto top-[48px] right-8 cursor-pointer"
                                    onClick={clickHandler}></Image>
                         </div>
                         <div className="relative">
@@ -142,7 +153,7 @@ export default function Page() {
                             <Image alt="show-confirm_password"
                                    src={`${!showConfirmPassword ? '../images/eye.svg' : '../images/eye-slash.svg'}`}
                                    width="100" height="0"
-                                   className="absolute h-7 w-auto top-[51px] right-[60px] cursor-pointer" priority
+                                   className="absolute h-7 w-auto top-[48px] right-8 cursor-pointer" priority
                                    onClick={clickHandler}></Image>
                         </div>
                         <input type="submit" value="Inscription"
@@ -153,7 +164,8 @@ export default function Page() {
                     </form>
                 </div>
             </div>
-            <div className="absolute bottom-0 right-10">
+            <div
+                className="fixed bottom-0 mobile:top-7 right-10 mobile:left-1/2 mobile:transform mobile:-translate-x-1/2 mobile:w-max mobile:h-fit">
                 <Toast_error error_message={errorMessage} closeToast={closeToast}/>
                 <Toast_success success_message={successMessage} closeToast={closeToast}/>
             </div>
