@@ -14,7 +14,7 @@ interface Form {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== "POST") {
         res.setHeader('Method-Allowed', 'POST');
-        res.status(405).json({success: false, message: "Method Not Allowed"})
+        res.status(405).json({success: false, type: "error", message: "Method Not Allowed"})
     }
     let {username, email, password, numero_phone} = JSON.parse(req.body);
 
@@ -22,12 +22,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (typeof apiKey === "string") {
         const apiKeyCorrect = await bcrypt.compare(process.env.API_KEY!, apiKey);
         if (!apiKeyCorrect) {
-            return res.status(403).json({success: false, message: "Forbidden."});
+            return res.status(403).json({success: false, type: "error", message: "Forbidden."});
         }
     }
 
     if (!validateData(JSON.parse(req.body))) {
-        res.status(400).json({success: false, message: "Veuillez vérifier les informations entré dans le formulaire."})
+        res.status(400).json({success: false, type: "error", message: "Veuillez vérifier les informations entré dans le formulaire."})
     }
     const hashedPassword = await cryptPassword(password);
     const emailExist = await prisma.utilisateur.findFirst({
@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
     try {
         if (emailExist) {
-            res.status(400).json({success: false, message: "Cette adresse email existe déjà."})
+            res.status(400).json({success: false, type: "error", message: "Cette adresse email existe déjà."})
         } else {
             const register = await prisma.utilisateur.create({
                 data: {
@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             })
             if (register) {
-                res.status(201).json({success: true, message: "Compte créé avec succès."})
+                res.status(201).json({success: true, type: "success", message: "Compte créé avec succès."})
             }
         }
     } catch (error) {
