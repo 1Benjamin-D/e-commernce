@@ -17,6 +17,7 @@ const CartItem: React.FC<CartItemProps> = ({
   price,
   onRemove,
 }) => {
+  
   return (
     <div className="flex items-center justify-between p-4 border-b border-gray-300">
       <div className="flex flex-col h-full w-fit bg-gradient-to-r from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-0.5 rounded-xl">
