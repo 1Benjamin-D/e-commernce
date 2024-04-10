@@ -2,12 +2,11 @@
 import React, {FormEvent, useEffect, useState} from "react";
 import {CustomInput} from "@/components/input";
 import Link from "next/link";
-import {Toast_error} from "@/components/toast_error";
 import Image from "next/image";
-import {Toast_success} from "@/components/toast_success";
 import {cryptPassword} from "@/utils/bcrypt";
 import {useRouter} from "next/navigation";
 import {validatetoken} from "@/utils/validatetoken";
+import Toaster from "@/components/Toaster";
 
 interface Form {
     username: string
@@ -36,12 +35,25 @@ export default function Page() {
     const [successMessage, setSuccessMessage] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    interface ToasterItem {
+        content: string;
+        type: string;
+    }
+    const [toasterItems, setToasterItems] = useState<Array<ToasterItem>>([])
     const router = useRouter();
     useEffect(() => {
-        if(validatetoken() && !validatetoken()!.expired){
-            router.push("/");
+        if (validatetoken() !== undefined){
+            if(!validatetoken()!.expired){
+                router.push("/");
+            }
         }
-    }, []);
+    }, [router]);
+
+    useEffect(() => {
+        if(toasterItems.length >= 5){
+            toasterItems.shift()
+        }
+    }, [toasterItems, toasterItems.length]);
     const onChange = (e: { target: HTMLInputElement }) => {
         setFormData({...formData, [e.target.name]: e.target.value})
         setErrors({...errors, [e.target.name]: ""})
@@ -99,19 +111,24 @@ export default function Page() {
                     body: JSON.stringify(formData)
                 })
                 const data = await response.json();
-                if (data.success) {
-                    setSuccessMessage('Votre compte a été créé avec succès.')
-                } else {
-                    setErrorMessage(data.message)
+                type ToasterItem = {
+                    type: string;
+                    content: string;
                 }
+                const toasterItem: ToasterItem = {type: data.type, content: data.message};
+                setToasterItems(prevToasterItems => [...prevToasterItems, toasterItem]);
             } catch (error) {
                 console.error("Erreur lors de l'envoi du formulaire :", error)
             }
         }
     }
-    const closeToast = () => {
-        setErrorMessage("");
-        setSuccessMessage("");
+    const closeToast = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const index = parseInt((e.currentTarget as HTMLElement).closest('div')!.getAttribute('toast_index') as string);
+        setToasterItems(prevToasterItems => {
+            const updatedToasterItems = [...prevToasterItems];
+            updatedToasterItems.splice(index, 1);
+            return updatedToasterItems;
+        });
     }
     const clickHandler = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
         const target = e.target as HTMLImageElement;
@@ -165,9 +182,16 @@ export default function Page() {
                 </div>
             </div>
             <div
-                className="fixed bottom-0 mobile:top-7 right-10 mobile:left-1/2 mobile:transform mobile:-translate-x-1/2 mobile:w-max mobile:h-fit">
-                <Toast_error error_message={errorMessage} closeToast={closeToast}/>
-                <Toast_success success_message={successMessage} closeToast={closeToast}/>
+                className="fixed mobile:w-2/3 mobile:h-fit mobile:top-5 mobile:left-1/2 mobile:transform mobile:-translate-x-1/2 bottom-5 right-5 flex flex-col">
+                {toasterItems.map(({content, type}, index): React.JSX.Element => {
+                    return (
+                        <Toaster key={index}
+                                 toast_index={index}
+                                 content={content}
+                                 type={type}
+                                 onClickEvent={closeToast}/>
+                    );
+                })}
             </div>
         </main>
     )
