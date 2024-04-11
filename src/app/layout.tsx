@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const Luciole_regular = localFont({
+  src: '../../public/Fonts/Luciole-Regular.ttf',
+  display: 'swap',
+  variable: '--font-Luciole_Regular',
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${Luciole_regular.variable}`}>{children}</body>
     </html>
   );
 }
