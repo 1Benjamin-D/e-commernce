@@ -32,10 +32,10 @@ export default function CategorySlider() {
     if (loaded) {
         return (
             <>
-                <div className="flex items-center gap-10 overflow-y-scroll">
+                <div className="flex items-center overflow-y-scroll">
                     {data.data.map((category, category_index) => (
                         <React.Fragment key={category_index}>
-                            <div className="flex flex-col gap-3">
+                            <div className="flex justify-center items-center flex-col gap-3">
                                 <div
                                     id={category.name}
                                     onClick={clickHandler}
@@ -43,7 +43,7 @@ export default function CategorySlider() {
                                         isClicked && catSelected !== category.name
                                             ? "hidden"
                                             : "flex"
-                                    } flex-col justify-center items-center gap-3 text-center w-[128px]`}
+                                    } flex-col justify-center items-center gap-3 text-center w-[128px] p-5`}
                                 >
                                     <img
                                         src={category.image}
