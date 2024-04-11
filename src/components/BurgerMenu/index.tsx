@@ -28,7 +28,7 @@ const BurgerMenu = () => {
   return (
     <>
       {/* Menu Burger */}
-      <div className="sm:hidden">
+      <div className="lg:hidden">
         <button
           onClick={toggleMenu}
           className="text-or focus:outline-none"
@@ -53,7 +53,7 @@ const BurgerMenu = () => {
       </div>
 
       {/* Menu déroulant */}
-      <div className={`sm:hidden flex flex-col gap-16 mt-16 items-center justify-center absolute top-full right-0  w-full text-center rounded-md bg-white ${menuOpen ? 'block' : 'hidden'}`}>
+      <div className={`lg:hidden flex flex-col gap-16 pt-16 pb-[100%] items-center justify-center absolute top-full right-0  w-full text-center rounded-md bg-white z-10 ${menuOpen ? 'block' : 'hidden'}`}>
         <BorderGradient>
           <a href="#home" className="block">
             <span className="font-Luciole_Regular text-xl">
