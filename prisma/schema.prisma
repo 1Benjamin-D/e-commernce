@@ -74,7 +74,7 @@ model id_prod_cart {
   id               Int     @id @default(autoincrement()) @db.SmallInt
   id_prod          Int     @db.SmallInt
   id_cart          Int     @db.SmallInt
-  product_quantity BigInt?
+  product_quantity Int?    @db.SmallInt
   Cart             Cart    @relation(fields: [id_cart], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_id_prod_cart_id_cart_fkey")
   Product          Product @relation(fields: [id_prod], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_id_prod_cart_id_prod_fkey")
 }

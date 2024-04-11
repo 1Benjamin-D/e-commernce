@@ -11,13 +11,13 @@ export interface Utilisateur {
 export default function Utilisateur() {
   // Déclaration des états pour stocker les données de l'API.
   const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
-  const name = `Gabinks`; // TODO : Change value
+
 
   // Utilisation de useEffect pour charger les données au montage du composant.
   useEffect(() => {
     async function fetchData() {
       // Récupération des formations depuis l'API et mise à jour de l'état.
-      const utilisateur = await fetch(`/api/user?name=${name}`);
+      const utilisateur = await fetch(`/api/getuser`);
       if (utilisateur.ok) {
         const data: Utilisateur = await utilisateur.json();
         setUtilisateur(data);
@@ -25,7 +25,7 @@ export default function Utilisateur() {
     }
     fetchData();
     // Le tableau de dépendances vide signifie que l'effet s'exécute une fois au montage du composant.
-  }, [name]);
+  }, []);
 
   return (
     <div>

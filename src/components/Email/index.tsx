@@ -10,18 +10,17 @@ export interface Utilisateur {
 
 export default function Email() {
   const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
-  const email = 'pro@gabinbuignet.xyz'; // TODO : Change value
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`/api/email?email=${email}`);
+      const response = await fetch(`/api/getuser`);
       if (response.ok) {
         const data: Utilisateur = await response.json();
         setUtilisateur(data);
       }
     }
     fetchData();
-  }, [email]);
+  }, []);
 
   return (
     <div>

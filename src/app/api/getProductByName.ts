@@ -1,5 +1,5 @@
+import { Product } from "@/components/Product";
 import prisma from "@/libs/prismadb";
-import { Product } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 export default async function getProductByName(request: NextRequest): Promise<Product | null>{

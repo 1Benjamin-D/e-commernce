@@ -10,18 +10,18 @@ export interface Utilisateur {
 
 export default function Phone() {
   const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
-  const phone = '629443055'; // TODO : Change value
+
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`/api/phone?phone=${phone}`);
+      const response = await fetch(`/api/getuser`);
       if (response.ok) {
         const data: Utilisateur = await response.json();
         setUtilisateur(data);
       }
     }
     fetchData();
-  }, [phone]);
+  }, []);
 
   return (
     <div>

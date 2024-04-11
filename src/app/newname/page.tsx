@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Utilisateur from "@/components/User";
 
 async function saveChanges(id: any, newName: any) {
-  const response = await fetch('/api/cheminVersVotreEndpoint', {
+  const response = await fetch('/api/getuser', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

@@ -3,6 +3,6 @@ import { Utilisateur } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 export default async function getUserByEmail(request: NextRequest): Promise<Utilisateur | null>{
-    const email = request.nextUrl.searchParams.get("email")!;
-    return prisma.utilisateur.findFirst({where: {email}});
+    const name = request.nextUrl.searchParams.get("name")!;
+    return prisma.utilisateur.findFirst({where: {name}});
 }

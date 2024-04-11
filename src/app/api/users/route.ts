@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import getUserAll from "../getUser";
+import getUserAll from "../../../pages/api/getuser";
 
 export async function GET() {
     const users = await getUserAll();
