@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import BorderGradient from "../ui/BorderGradient";
-import Category from "@/app/category/page";
+import Filters from "../Filters";
 
 const BurgerMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -67,7 +67,7 @@ const BurgerMenu = () => {
           </a>
           <Image src="/Images/logo-panier.png" alt="logo_panier" width={50} height={50} className="h-5 w-auto" />
         </BorderGradient>
-        <Category />
+        <Filters/>
       </div>
     </>
   )

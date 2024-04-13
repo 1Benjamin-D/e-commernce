@@ -2,6 +2,7 @@
 
 const Footer = () => {
   return (
+    <footer>
       <div className="font-Luciole_Regular flex flex-col text-center items-center bg-[#f8f8f8] mt-[50px] md:flex-row justify-center lg:pl-[60px] m-[-20px]">
         <div className="flex flex-col">
           <a href="" className="mt-[10px]">Accueil</a>
@@ -20,6 +21,7 @@ const Footer = () => {
           <a href="" className="mt-[10px] mb-[10px]">© Copyright</a>
         </div>
       </div>
+    </footer>
   )
 }
 export default Footer;

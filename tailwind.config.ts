@@ -16,6 +16,9 @@ const config: Config = {
                 secondStepGradient: "#FD8F50",
                 thirdStepGradient: "#FFC53E",
             },
+            screens: {
+                "mobile": {max: '390px'}
+            }
         },
     },
     plugins: [],
