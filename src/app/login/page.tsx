@@ -32,10 +32,9 @@ export default function Page() {
 
     const router = useRouter();
     useEffect(() => {
-        if (validatetoken() !== undefined){
-            if(!validatetoken()!.expired){
-                router.push("/");
-            }
+        if (validatetoken() === undefined) return;
+        if(!validatetoken()!.expired){
+            router.push("/");
         }
     }, [router]);
 
