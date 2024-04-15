@@ -16,6 +16,13 @@ const config: Config = {
                 secondStepGradient: "#FD8F50",
                 thirdStepGradient: "#FFC53E",
             },
+            textColor: {
+                "custom_red": "#FF0000",
+                "custom_orange": "#FD8F50"
+            },
+            backgroundColor: {
+                "custom_orange": "#FD8F50"
+            },
             screens: {
                 "mobile": {max: '390px'}
             }

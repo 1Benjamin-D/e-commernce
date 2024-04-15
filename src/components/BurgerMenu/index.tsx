@@ -55,7 +55,7 @@ const BurgerMenu = () => {
       {/* Menu déroulant */}
       <div className={`lg:hidden flex flex-col gap-16 pt-16 pb-[100%] items-center justify-center absolute top-full right-0  w-full text-center rounded-md bg-white z-10 ${menuOpen ? 'block' : 'hidden'}`}>
         <BorderGradient>
-          <a href="#home" className="block">
+          <a href="/login" className="block">
             <span className="font-Luciole_Regular text-xl">
               Connexion/Déconnexion
             </span>
@@ -67,7 +67,7 @@ const BurgerMenu = () => {
           </a>
           <Image src="/Images/logo-panier.png" alt="logo_panier" width={50} height={50} className="h-5 w-auto" />
         </BorderGradient>
-        <Filters/>
+        {/* <Filters/> */}
       </div>
     </>
   )
