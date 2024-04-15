@@ -1,11 +1,11 @@
 'use client'
-import React, {FormEvent, useEffect, useState} from "react";
-import {CustomInput} from "@/components/input";
+import React, { FormEvent, useEffect, useState } from "react";
+import { CustomInput } from "@/components/input";
 import Link from "next/link";
 import Image from "next/image";
-import {cryptPassword} from "@/utils/bcrypt";
-import {useRouter} from "next/navigation";
-import {validatetoken} from "@/utils/validatetoken";
+import { cryptPassword } from "@/utils/bcrypt";
+import { useRouter } from "next/navigation";
+import { validatetoken } from "@/utils/validatetoken";
 import Toaster from "@/components/Toaster";
 
 interface Form {
@@ -18,7 +18,7 @@ export default function Page() {
         username: "",
         password: ""
     })
-    const [errors, setErrors] = useState<Form>({password: "", username: ""})
+    const [errors, setErrors] = useState<Form>({ password: "", username: "" })
     const [showPassword, setShowPassword] = useState(false)
     interface ToasterItem {
         content: string;
@@ -26,20 +26,20 @@ export default function Page() {
     }
     const [toasterItems, setToasterItems] = useState<Array<ToasterItem>>([])
     const onChange = (e: { target: HTMLInputElement }) => {
-        setFormData({...formData, [e.target.name]: e.target.value})
-        setErrors({...errors, [e.target.name]: ""})
+        setFormData({ ...formData, [e.target.name]: e.target.value })
+        setErrors({ ...errors, [e.target.name]: "" })
     }
 
     const router = useRouter();
     useEffect(() => {
         if (validatetoken() === undefined) return;
-        if(!validatetoken()!.expired){
+        if (!validatetoken()!.expired) {
             router.push("/");
         }
     }, [router]);
 
     useEffect(() => {
-        if(toasterItems.length >= 5){
+        if (toasterItems.length >= 5) {
             toasterItems.shift()
         }
     }, [toasterItems, toasterItems.length]);
@@ -49,17 +49,19 @@ export default function Page() {
             const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: {
-                  'API-Key': await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!),
+                    'api-key': await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!),
                 },
                 body: JSON.stringify(formData)
             })
             const data = await response.json();
-            type ToasterItem = {
-                type: string;
-                content: string;
-            }
-            const toasterItem: ToasterItem = {type: data.type, content: data.message};
-            setToasterItems(prevToasterItems => [...prevToasterItems, toasterItem]);
+            console.log(data);
+
+            // type ToasterItem = {
+            //     type: string;
+            //     content: string;
+            // }
+            // const toasterItem: ToasterItem = {type: data.type, content: data.message};
+            // setToasterItems(prevToasterItems => [...prevToasterItems, toasterItem]);
             if (data.success) {
                 let token = data.token;
                 localStorage.setItem("token", token);
@@ -91,23 +93,23 @@ export default function Page() {
                 <p className="text-3xl text-custom_red">Connexion</p>
                 <div className="rounded-2xl bg-gradient-to-br from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-[2px]">
                     <form autoComplete="off"
-                          className="flex flex-col items-center gap-5 bg-white p-14 mobile:p-7 rounded-[calc(1rem-2px)]"
-                          onSubmit={formHandler}>
+                        className="flex flex-col items-center gap-5 bg-white p-14 mobile:p-7 rounded-[calc(1rem-2px)]"
+                        onSubmit={formHandler}>
                         <CustomInput type="text" name="username" labelText="Nom d'utilisateur" error={errors.username}
-                                     onChange={onChange}
-                                     value={formData.username}/>
+                            onChange={onChange}
+                            value={formData.username} />
                         <div className="relative">
                             <CustomInput labelText="Mot de passe" name="password"
-                                         type={`${!showPassword ? 'password' : 'text'}`} onChange={onChange}
-                                         value={formData.password} error={errors.password}/>
+                                type={`${!showPassword ? 'password' : 'text'}`} onChange={onChange}
+                                value={formData.password} error={errors.password} />
                             <Image alt="show-password"
-                                   src={`${!showPassword ? '../images/eye.svg' : '../images/eye-slash.svg'}`}
-                                   width="100" height="0"
-                                   className="absolute h-7 w-auto top-[48px] right-8 cursor-pointer"
-                                   onClick={clickHandler}></Image>
+                                src={`${!showPassword ? '../images/eye.svg' : '../images/eye-slash.svg'}`}
+                                width="100" height="0"
+                                className="absolute h-7 w-auto top-[48px] right-8 cursor-pointer"
+                                onClick={clickHandler}></Image>
                         </div>
                         <input type="submit" value="Connexion"
-                               className="bg-custom_orange text-white text-lg p-3 rounded-2xl cursor-pointer"/>
+                            className="bg-custom_orange text-white text-lg p-3 rounded-2xl cursor-pointer" />
                         <p className="text-lg">Pas de compte ? <Link href="/register"><span
                             className="bg-clip-text border-b border-b-orange-300 text-transparent bg-gradient-to-b from-[#FF5863] via-[#FD8F50] to-[#FFC53E]">Inscription</span></Link>
                         </p>
@@ -116,13 +118,13 @@ export default function Page() {
             </div>
             <div
                 className="fixed mobile:w-2/3 mobile:h-fit mobile:top-5 mobile:left-1/2 mobile:transform mobile:-translate-x-1/2 bottom-5 right-5 flex flex-col">
-                {toasterItems.map(({content, type}, index): React.JSX.Element => {
+                {toasterItems.map(({ content, type }, index): React.JSX.Element => {
                     return (
                         <Toaster key={index}
-                                 toast_index={index}
-                                 content={content}
-                                 type={type}
-                                 onClickEvent={closeToast}/>
+                            toast_index={index}
+                            content={content}
+                            type={type}
+                            onClickEvent={closeToast} />
                     );
                 })}
             </div>

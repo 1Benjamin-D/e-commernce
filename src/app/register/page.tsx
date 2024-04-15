@@ -110,7 +110,7 @@ export default function Page() {
                 const response = await fetch('/api/register', {
                     method: 'POST',
                     headers: {
-                        'API-Key': await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
+                        'api-key': await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
                     },
                     body: JSON.stringify(formData)
                 })
