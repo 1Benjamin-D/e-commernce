@@ -2,8 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import BurgerMenu from "../BurgerMenu";
+import { SearchInput } from "../SearchInput";
 import BorderGradient from "../ui/BorderGradient";
-import Input from "../ui/Input";
 
 export default function Navbar() {
 
@@ -17,11 +17,7 @@ export default function Navbar() {
             <Image src="/Images/logo-ecommernce.png" alt="Logo" className="h-16 w-auto" width={75} height={73} />
           </Link>
           <div className="hidden lg:ml-[100px] lg:flex md:ml-[20px]">
-            <Input className="md:p-0 md:text-xl md:">
-              <button type="button">
-                <Image src="/Images/Search-logo.png" alt="search_logo" width={1000} height={1000} className="w-7 h-7" />
-              </button>
-            </Input>
+            <SearchInput />
           </div>
         </div>
 
@@ -30,7 +26,7 @@ export default function Navbar() {
         <div className=" lg:flex hidden font-Luciole_Regular">
           <div>
             <BorderGradient>
-              <a href="#" className="block">
+              <a href="/login" className="block">
                 <span className=" text-base">
                   Connexion/Déconnexion
                 </span>
@@ -46,7 +42,7 @@ export default function Navbar() {
             </BorderGradient>
           </div>
         </div>
-        <BurgerMenu />
+        <BurgerMenu/>
       </div>
     </nav>
   )

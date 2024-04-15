@@ -1,10 +1,8 @@
 'use client'
-import React, { useState } from "react";
-import Navbar from "@/components/Navbar";
+import React, {useState} from "react";
 import Input from "@/components/ui/Input";
 import Image from "next/image";
 import Products from "./products/page";
-import Footer from "@/components/Footer";
 import Filters from "@/components/Filters";
 
 const Home: React.FC = () => {
@@ -33,7 +31,6 @@ const Home: React.FC = () => {
 
   return (
     <main>
-      <Navbar />
       <Filters
         onCategoryChange={handleCategoryChange}
         onSubCategoryChange={handleSubCategoryChange}
@@ -47,7 +44,6 @@ const Home: React.FC = () => {
         selectedCategoryId={selectedCategoryId}
         selectedSubCategoryId={selectedSubCategoryId}
       />
-      <Footer />
     </main>
   );
 };
