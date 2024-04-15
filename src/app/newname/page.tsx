@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Utilisateur from "@/components/User";
 
 async function saveChanges(id: any, newName: any) {
-  const response = await fetch('/api/getuser', {
+  const response = await fetch('/api/updateUser', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export default function NewName() {
               Ancien Nom
             </label>
             <div className="bg-gradient-to-r from-[#FF5863] via-[#FD8F50] to-[#FFC53E] w-2/3 p-0.5 rounded-lg">
-              <div className=" py-2 px-3 bg-gray-300 rounded-lg text-center break-words w-60 ">
+              <div className=" py-2 px-3 bg-gray-300 rounded-lg text-center break-words">
                 <Utilisateur />
               </div>
             </div>

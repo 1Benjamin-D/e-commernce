@@ -1,4 +1,3 @@
-"use client"
 import { useEffect, useState } from "react";
 
 export interface Utilisateur {
@@ -9,8 +8,9 @@ export interface Utilisateur {
     numero_phone : number | null;
 }
 
-export default function Email() {
+export default function Password() {
   const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -27,7 +27,7 @@ export default function Email() {
     <div>
       {utilisateur && 
         <div key={utilisateur.id}>
-          <p>{utilisateur.email}</p>
+          <p>{"•".repeat(utilisateur.password.length)}</p>
         </div>
       }
     </div>

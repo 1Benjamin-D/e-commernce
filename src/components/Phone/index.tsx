@@ -14,7 +14,7 @@ export default function Phone() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`/api/getuser`);
+      const response = await fetch(`/api/getuserbyid`);
       if (response.ok) {
         const data: Utilisateur = await response.json();
         setUtilisateur(data);

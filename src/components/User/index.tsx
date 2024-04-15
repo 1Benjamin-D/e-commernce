@@ -17,7 +17,7 @@ export default function Utilisateur() {
   useEffect(() => {
     async function fetchData() {
       // Récupération des formations depuis l'API et mise à jour de l'état.
-      const utilisateur = await fetch(`/api/getuser`);
+      const utilisateur = await fetch(`/api/getuserbyid`);
       if (utilisateur.ok) {
         const data: Utilisateur = await utilisateur.json();
         setUtilisateur(data);

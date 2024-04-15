@@ -9,7 +9,7 @@ type CartItemProps = {
   description: string;
   price: number;
   image: string | null;
-  onRemove: (id: number) => void; // Fonction à appeler pour retirer un produit du panier.
+  onRemove: (id: number) => void;
 };
 
 const CartItem: React.FC<CartItemProps> = ({
@@ -54,29 +54,44 @@ const Cart: React.FC = () => {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const response = await fetch(`/api/getproductbyid`);
-
-        if (!response.ok) {
-          throw new Error(
-            "Problème lors de la récupération des données du panier"
-          );
+        const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+        if (typeof apiKey === 'undefined') {
+          throw new Error('La clé API est indéfinie');
         }
+        
+        const response = await fetch(`api/getcartbyuser`, {
+          method: 'POST',
+          headers: new Headers({
+            'Content-Type': 'application/json', 
+            'api-key': apiKey
+          })
+        });
+    
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`Erreur ${response.status}: ${errorData.message}`);
+        }
+    
         const data = await response.json();
-
+    
         let cartItems = data.data;
-        console.log(cartItems);
-
-        const newItems = cartItems.map((cartItem: any) => ({
-          id: cartItem.id,
-          name: cartItem.Product.product_name,
-          description: cartItem.Product.product_description,
-          price: cartItem.Product.product_price,
-          image: cartItem.Product.product_image,
-          onRemove: removeItemFromCart,
-        }));
+        console.log("Cart Items:", cartItems);
+    
+        const newItems = cartItems.flatMap((cartItem: { id_prod_cart: any[]; }) => 
+          cartItem.id_prod_cart.map(prodCart => ({
+            id: prodCart.id,
+            name: prodCart.Product.product_name, 
+            description: prodCart.Product.product_description,
+            price: prodCart.Product.product_price,
+            image: prodCart.Product.product_image,
+            onRemove: removeItemFromCart, 
+          }))
+        );
+    
+        console.log("Nouveau items:", newItems);
         setItems(newItems);
       } catch (error) {
-        console.error("Erreur lors du chargement des produits :", error);
+        console.error("Erreur lors du chargement des produits :");
       }
     };
 
