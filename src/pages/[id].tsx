@@ -1,8 +1,6 @@
 'use client'
 import Layout from "@/pages/layout";
 import Image from "next/image";
-import RemoveButton from "@/components/removeButton";
-import AddButton from "@/components/addButton";
 import { cryptPassword } from "@/utils/bcrypt";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -44,9 +42,24 @@ export default function Page({ article }: Article) {
     }, [router]);
     useEffect(() => {
         if (toasterItems.length >= 5) {
-            toasterItems.shift()
+            setToasterItems(prevToasterItems => {
+                const updatedToasterItems = [...prevToasterItems];
+                updatedToasterItems.shift();
+                return updatedToasterItems;
+            })
         }
-    }, [toasterItems, toasterItems.length]);
+        if (toasterItems.length > 0) {
+            const timer = setTimeout(() => {
+                setToasterItems(prevToasterItems => {
+                    const updatedToasterItems = [...prevToasterItems];
+                    updatedToasterItems.shift();
+                    return updatedToasterItems;
+                });
+            }, 2000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [toasterItems.length]);
     const clickHandler = (action: string) => {
         if (action === "add") {
             if (quantity < 99) {
@@ -83,7 +96,8 @@ export default function Page({ article }: Article) {
             const toasterItem: ToasterItem = { type: data.type, content: data.message };
             toasterItems.push(toasterItem)
         } else {
-            console.log("Vous allez trop vite")
+            const toasterItem: ToasterItem = { type: 'warning', content: 'Vous allez trop vite.' }
+            toasterItems.push(toasterItem)
             return;
         }
         setIsAddingToCart(false)
