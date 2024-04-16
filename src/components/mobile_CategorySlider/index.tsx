@@ -1,5 +1,6 @@
 'use client'
-import React, {useEffect, useState} from "react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
 export default function CategorySlider() {
     const [isClicked, setIsClicked] = useState(false)
@@ -39,17 +40,12 @@ export default function CategorySlider() {
                                 <div
                                     id={category.name}
                                     onClick={clickHandler}
-                                    className={`${
-                                        isClicked && catSelected !== category.name
-                                            ? "hidden"
-                                            : "flex"
-                                    } flex-col justify-center items-center gap-3 text-center w-[128px] p-5`}
+                                    className={`${isClicked && catSelected !== category.name
+                                        ? "hidden"
+                                        : "flex"
+                                        } flex-col justify-center items-center gap-3 text-center w-[128px] p-5`}
                                 >
-                                    <img
-                                        src={category.image}
-                                        alt=""
-                                        className="h-20 w-auto rounded-full"
-                                    />
+                                    <Image src={category.image} alt={category.name} height={100} width={0} className="h-20 w-auto rounded-full" />
                                     <p className="bg-slate-700 text-white">
                                         {category.name}
                                     </p>
@@ -63,13 +59,7 @@ export default function CategorySlider() {
                                                 key={sub_cat_index}
                                                 className="flex flex-col justify-center items-center text-center w-32"
                                             >
-                                                <img
-                                                    src={
-                                                        sub_cat.Sub_category.image
-                                                    }
-                                                    alt=""
-                                                    className="h-20 wauto rounded-full"
-                                                />
+                                                <Image src={sub_cat.Sub_category.image} alt={sub_cat.Sub_category.name} height={100} width={0} className="h-20 w-auto rounded-full" />
                                                 <p>
                                                     {
                                                         sub_cat.Sub_category.name
