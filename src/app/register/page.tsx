@@ -180,7 +180,7 @@ export default function Page() {
                         <div className="flex flex-col justify-center items-center gap-3">
                             <div className="flex gap-3">
                                 <input onChange={onChange} type="checkbox" name="ugc" id="cgu" required />
-                                <p>Accepter les <Link href="/cgu" target="_blank" className="text-orange-500 underline underline-offset-2">conditions générale d'utilisations</Link></p>
+                                <p>Accepter les <Link href="/cgu" target="_blank" className="text-orange-500 underline underline-offset-2">{"conditions générale d'utilisations"}</Link></p>
                             </div>
                             <p className="text-red-400 font-medium w-72 text-center">{errors.ugc}</p>
                         </div>

@@ -54,14 +54,12 @@ export default function Page() {
                 body: JSON.stringify(formData)
             })
             const data = await response.json();
-            console.log(data);
-
-            // type ToasterItem = {
-            //     type: string;
-            //     content: string;
-            // }
-            // const toasterItem: ToasterItem = {type: data.type, content: data.message};
-            // setToasterItems(prevToasterItems => [...prevToasterItems, toasterItem]);
+            type ToasterItem = {
+                type: string;
+                content: string;
+            }
+            const toasterItem: ToasterItem = { type: data.type, content: data.message };
+            setToasterItems(prevToasterItems => [...prevToasterItems, toasterItem]);
             if (data.success) {
                 let token = data.token;
                 localStorage.setItem("token", token);
@@ -113,6 +111,7 @@ export default function Page() {
                         <p className="text-lg">Pas de compte ? <Link href="/register"><span
                             className="bg-clip-text border-b border-b-orange-300 text-transparent bg-gradient-to-b from-[#FF5863] via-[#FD8F50] to-[#FFC53E]">Inscription</span></Link>
                         </p>
+                        <p className="text-lg">Mot de passe <Link href="/reset" className="bg-clip-text border-b border-b-orange-300 text-transparent bg-gradient-to-b from-[#FF5863] via-[#FD8F50] to-[#FFC53E] cursor-pointer">oublié</Link> ?</p>
                     </form>
                 </div>
             </div>
