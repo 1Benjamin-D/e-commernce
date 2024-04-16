@@ -11,22 +11,17 @@ async function saveChanges(id: any, newName: any) {
     },
     body: JSON.stringify({ id: id, name: newName })
   });
+  
+  const data = await response.json();
+  console.log('Réponse mise à jour:', data);
 
-  if (response.ok) {
-    const data = await response.json();
-    console.log('Réponse mise à jour:', data);
-  } else {
-    console.error('Erreur lors de la mise à jour');
-  } 
 }
 
 
 export default function NewName() {
   const [newName, setNewName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [saveStatus, setSaveStatus] = useState("idle"); 
-
-  const name = "";
+  const [saveStatus, setSaveStatus] = useState(""); 
 
   const handleChange = (event: { target: { value: any } }) => {
     const value = event.target.value;
@@ -46,13 +41,13 @@ export default function NewName() {
 
     try {
       setSaveStatus("saving");
-      await saveChanges(name, newName);
+      await saveChanges(9, newName);
       setSaveStatus("success");
-
       window.location.href = "/accountmanagement";
     } catch (error) {
       setErrorMessage("Erreur lors de la sauvegarde du nom.");
       setSaveStatus("error");
+      console.error("newname : ", error )
     }
   };
 

@@ -7,6 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === "PUT") {
     try {
       const { id, name } = req.body; // Retirez les autres champs pour ne pas les mettre à jour
+     
 
       // Validez l'existence de l'id et du name
       if (typeof id !== 'number' || !name?.trim()) {

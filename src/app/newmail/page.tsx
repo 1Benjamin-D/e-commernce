@@ -5,9 +5,10 @@ import Email from "@/components/Email";
 export default function NewEmail() {
   const [newEmail, setNewEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [saveStatus, setSaveStatus] = useState(""); 
 
-  async function saveChanges(id: string, newEmail: string) {
-    const response = await fetch("/api/updateUser", {
+  async function saveChanges(id: any, newEmail: string) {
+    const response = await fetch("/api/updateEmail", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -41,6 +42,16 @@ export default function NewEmail() {
       window.location.href = "/accountmanagement";
     } catch (error) {
       setErrorMessage("Erreur lors de la sauvegarde des modifications");
+    }
+    try {
+      setSaveStatus("saving");
+      await saveChanges(9, newEmail);
+      setSaveStatus("success");
+      window.location.href = "/accountmanagement";
+    } catch (error) {
+      setErrorMessage("Erreur lors de la sauvegarde du nom.");
+      setSaveStatus("error");
+      console.error("newname : ", error )
     }
   };
 

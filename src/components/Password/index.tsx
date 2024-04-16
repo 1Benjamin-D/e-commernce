@@ -25,11 +25,6 @@ export default function Password() {
 
   return (
     <div>
-      {utilisateur && 
-        <div key={utilisateur.id}>
-          <p>{"•".repeat(utilisateur.password.length)}</p>
-        </div>
-      }
     </div>
   );
 }

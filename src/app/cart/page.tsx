@@ -101,7 +101,7 @@ const Cart: React.FC = () => {
               description: prodCart.Product.product_description,
               price: parseFloat(prodCart.Product.product_price),
               image: prodCart.Product.product_image,
-              quantity: prodCart.quantity || 1, // Assurez-vous que la valeur par défaut est un nombre.
+              quantity: prodCart.quantity || 1,
               onRemove: removeItemFromCart,
               onIncrement: incrementQuantity,
               onDecrement: decrementQuantity,

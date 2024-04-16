@@ -16,7 +16,7 @@ export default async function handler(
           name: true,
           email: true,
           numero_phone: true,
-          password: true,
+          password: false,
         },
       });
 
