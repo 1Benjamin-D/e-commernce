@@ -2,6 +2,7 @@
 
 import { cryptPassword } from "@/utils/bcrypt";
 import React, { useEffect, useState } from "react";
+import LoadingC from "../loadingC";
 
 interface Category {
   id: number;
@@ -23,7 +24,7 @@ interface FiltersProps {
 
 const Filters: React.FC<FiltersProps> = ({ onCategoryChange, onSubCategoryChange }) => {
   const [categorys, setCategorys] = useState<Category[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [isloading, setLoading] = useState<boolean>(false);
   const [isClicked, setIsClicked] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(null);
@@ -42,7 +43,7 @@ const Filters: React.FC<FiltersProps> = ({ onCategoryChange, onSubCategoryChange
         }
         const data = await response.json();
         setCategorys(data);
-        setLoaded(true);
+        setLoading(true);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
@@ -61,29 +62,36 @@ const Filters: React.FC<FiltersProps> = ({ onCategoryChange, onSubCategoryChange
     setSelectedSubCategory(subCategoryId);
     onSubCategoryChange(subCategoryId);
   };
+  if (!isloading || !categorys) {
+    const loadingCards = Array.from({ length: 6 }, (_, index) => (
+      <div key={index} className="categorys-card">
+        <LoadingC />
+      </div>
+    ));
 
-  if (!loaded) {
-    return <div className="text-center">Loading...</div>;
+    return (
+      <div className="flex items-center mt-[50px] mb-[50px] lg:flex-row lg:justify-around lg:flex-nowrap gap-4 m-4 lg:w-[60%] lg:ml-[20%]">
+        {loadingCards}
+      </div>
+    );
   }
-
   return (
     <div className="flex justify-center items-center overflow-y-scroll lg:overflow-y-hidden">
       {categorys && categorys.map((category) => (
         <div key={category.id} className="flex justify-center items-center flex-col gap-3">
-          <div
-            id={String(category.id)}
+          <div id={String(category.id)}
             onClick={() => handleCategoryClick(category.id)}
-            className={`${isClicked && selectedCategory !== category.id ? "hidden" : "flex"} flex-col justify-center items-center gap-3 text-center w-128 p-5 cursor-pointer`}
-          >
-            <div className="bg-gradient-to-b from-firstStepGradient via-secondStepGradient to-thirdStepGradient p-1 rounded-full">
+            className={`${isClicked && selectedCategory !== category.id ? "hidden" : "flex"} flex-col justify-center items-center gap-3 text-center w-128 p-5 cursor-pointer`}>
+            <div className="bg-gradient-to-b from-firstStepGradient via-secondStepGradient to-thirdStepGradient w-28 h-28 p-1 rounded-full">
               <img
                 src={category.image}
                 alt=""
-                className="h-28 w-auto rounded-full"
+                className="rounded-full"
               />
             </div>
             <h2 className="text-sm font-Luciole_Regular mt-4 text-nowrap text-center">{category.name}</h2>
           </div>
+
           <div
             className={`${isClicked && selectedCategory === category.id ? "flex" : "hidden"}`}
           >
