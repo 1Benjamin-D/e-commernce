@@ -1,5 +1,6 @@
 'use client'
 
+import { cryptPassword } from "@/utils/bcrypt";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -26,7 +27,12 @@ const Products: React.FC<ProductsProps> = ({ selectedCategoryId, selectedSubCate
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('../api/products');
+                const response = await fetch('/api/products', {
+                    method: "GET",
+                    headers: {
+                      "api-key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
+                    },
+                  });
                 if (response.ok) {
                     const data: Product[] = await response.json();
                     const filteredProducts = data.filter((product) => {

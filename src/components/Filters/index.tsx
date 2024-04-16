@@ -1,5 +1,7 @@
 'use client'
-import React, { useState, useEffect } from "react";
+
+import { cryptPassword } from "@/utils/bcrypt";
+import React, { useEffect, useState } from "react";
 
 interface Category {
   id: number;
@@ -20,7 +22,7 @@ interface FiltersProps {
 }
 
 const Filters: React.FC<FiltersProps> = ({ onCategoryChange, onSubCategoryChange }) => {
-  const [data, setData] = useState<Category[]>([]);
+  const [categorys, setCategorys] = useState<Category[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -29,9 +31,17 @@ const Filters: React.FC<FiltersProps> = ({ onCategoryChange, onSubCategoryChange
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/category');
-        const json: Category[] = await response.json();
-        setData(json);
+        const response = await fetch('/api/category', {
+          method: "GET",
+          headers: {
+            "api-key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setCategorys(data);
         setLoaded(true);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -57,8 +67,8 @@ const Filters: React.FC<FiltersProps> = ({ onCategoryChange, onSubCategoryChange
   }
 
   return (
-    <div className="flex justify-center items-center overflow-y-scroll">
-      {data.map((category) => (
+    <div className="flex justify-center items-center overflow-y-scroll lg:overflow-y-hidden">
+      {categorys && categorys.map((category) => (
         <div key={category.id} className="flex justify-center items-center flex-col gap-3">
           <div
             id={String(category.id)}

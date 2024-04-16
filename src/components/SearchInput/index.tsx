@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import BorderGradient from "../ui/BorderGradient";
+import { cryptPassword } from "@/utils/bcrypt";
 
 interface Product {
   id: number;
@@ -19,7 +20,12 @@ export function SearchInput() {
     const fetchProductSuggestions = async (searchTerm: string) => {
       try {
         if (searchTerm && searchTerm.length >= 3) {
-          const response = await fetch(`/api/products?name=${encodeURIComponent(searchTerm)}`);
+          const response = await fetch(`/api/products?name=${encodeURIComponent(searchTerm)}`, {
+            method: "GET",
+            headers: {
+              "api-key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
+            },
+          });
           if (response.ok) {
             const data = await response.json();
 
@@ -86,7 +92,7 @@ export function SearchInput() {
           className="w-full focus:outline-none text-center outline-none p-3 text-2xl lg:text-sm lg:p-0"
         />
         <button type="button">
-          <Image src="/Images/Search-logo.png" alt="search_logo" width={14} height={7} className="w-7 h-7" id="search" />
+          <Image src="/Images/Search-logo.png" alt="search_logo" width={1000} height={1000} className="w-7 h-7" id="search" />
         </button>
       </BorderGradient>
       {renderSuggestions()}
