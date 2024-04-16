@@ -32,9 +32,9 @@ const Products: React.FC<ProductsProps> = ({ selectedCategoryId, selectedSubCate
                 const response = await fetch('/api/products', {
                     method: "GET",
                     headers: {
-                      "api-key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
+                        "api-key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
                     },
-                  });
+                });
                 if (response.ok) {
                     const data: Product[] = await response.json();
                     const filteredProducts = data.filter((product) => {
@@ -70,7 +70,7 @@ const Products: React.FC<ProductsProps> = ({ selectedCategoryId, selectedSubCate
             </div>
         );
     }
-    
+
     return (
         <div
             className="font-Luciole_Regular flex flex-col items-center mt-[50px] lg:flex-row lg:justify-around lg:flex-wrap gap-4 m-4">

@@ -70,7 +70,7 @@ export function SearchInput() {
         <div className="absolute bg-white border border-gray-200 w-full rounded-b-md shadow-lg z-10">
           {suggestions.map((suggestion) => (
             <div key={suggestion.product_name} onClick={() => handleSuggestionClick(suggestion)}>
-              <Link href={`/${suggestion.id}`} className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center justify-around border-t-2 border-double">
+              <Link href={`/product/${suggestion.id}`} className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center justify-around border-t-2 border-double">
                 <Image src={suggestion.product_image} alt={suggestion.product_name} width={100} height={100} />
                 <span className="ml-2">{suggestion.product_name}</span>
               </Link>
