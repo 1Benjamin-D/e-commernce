@@ -1,9 +1,8 @@
 'use client'
 import React, {useState} from "react";
-import Input from "@/components/ui/Input";
-import Image from "next/image";
 import Products from "./products/page";
 import Filters from "@/components/Filters";
+import { SearchInput } from "@/components/SearchInput";
 
 const Home: React.FC = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -36,9 +35,7 @@ const Home: React.FC = () => {
         onSubCategoryChange={handleSubCategoryChange}
       />
       <div className="lg:hidden">
-        <Input>
-          <Image src="/Images/Search-logo.png" alt="search_logo" width={1000} height={1000} className="w-7 h-7" />
-        </Input>
+        <SearchInput/>
       </div>
       <Products
         selectedCategoryId={selectedCategoryId}
