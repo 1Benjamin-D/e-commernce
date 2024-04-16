@@ -17,7 +17,7 @@ async function saveChanges(id: any, newName: any) {
     console.log('Réponse mise à jour:', data);
   } else {
     console.error('Erreur lors de la mise à jour');
-  }
+  } 
 }
 
 
@@ -26,7 +26,7 @@ export default function NewName() {
   const [errorMessage, setErrorMessage] = useState("");
   const [saveStatus, setSaveStatus] = useState("idle"); 
 
-  const name = "sasa";
+  const name = "";
 
   const handleChange = (event: { target: { value: any } }) => {
     const value = event.target.value;
@@ -46,7 +46,7 @@ export default function NewName() {
 
     try {
       setSaveStatus("saving");
-      await saveChanges(name, newName); 
+      await saveChanges(name, newName);
       setSaveStatus("success");
 
       window.location.href = "/accountmanagement";
