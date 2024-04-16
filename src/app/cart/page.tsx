@@ -43,13 +43,9 @@ const CartItem: React.FC<CartItemProps> = ({
         <p className="text-lg font-bold">{name}</p>
         <p className="text-gray-700">{description}</p>
         <div className="flex items-center space-x-2 my-2 mx-2">
-          <button onClick={() => onDecrement(id)}>
-            -
-          </button>
+          <button onClick={() => onDecrement(id)}>-</button>
           <span className="min-w-[35px] text-center block">{quantity}</span>
-          <button onClick={() => onIncrement(id)} >
-            +
-          </button>
+          <button onClick={() => onIncrement(id)}>+</button>
         </div>
         <span className="font-bold">{`${(price * quantity).toFixed(2)}€`}</span>
       </div>
@@ -123,7 +119,27 @@ const Cart: React.FC = () => {
 
   // Fonctions pour gérer les actions sur les éléments du panier.
   const removeItemFromCart = async (id: number) => {
-    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+    try {
+      // Envoie la requête DELETE à l'API
+      const response = await fetch(`/api/deleteproductbyid?id=${id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            "Une erreur est survenue lors de la suppression de l'article."
+        );
+      }
+
+      // Met à jour l'état local si la suppression a été confirmée par l'API
+      setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+
+      console.log("Article supprimé avec succès", data);
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'article");
+    }
   };
 
   const incrementQuantity = (id: number) => {
