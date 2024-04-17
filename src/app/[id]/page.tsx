@@ -32,7 +32,7 @@ export default function Page(req: Params) {
             setIsLoading(false)
         }
         fetchData();
-    }, [])
+    }, [req.params.id])
     const router = useRouter();
     const [quantity, setQuantity] = useState(1)
     const [isAddingToCart, setIsAddingToCart] = useState(false)
