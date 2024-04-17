@@ -38,13 +38,13 @@ export default function Page() {
         }
         fetchData();
     }, []);
-    const changeHandler = (e) => {
+    const changeHandler = (e: { target: { name: any; value: any; }; }) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
         seterrors({ ...errors, [e.target.name]: "" })
     }
     const [loading, setloading] = useState(false);
     const router = useRouter();
-    const submitHandler = async (e) => {
+    const submitHandler = async (e: { preventDefault: () => void; }) => {
         e.preventDefault()
         if (!validate()) {
             setloading(true)
@@ -56,38 +56,53 @@ export default function Page() {
                 }
             })
             const data = await response.json();
-            setloading(false)
             if (data.success) {
                 localStorage.removeItem('token')
                 router.push('/login?message=' + data.message)
                 return;
             }
+            else {
+                setloading(false)
+            }
         }
 
     }
     const validate = () => {
-        const { old_pass, pass, c_pass } = formData
+        const { old_pass, pass, c_pass } = formData;
         const newErrors: {
-            old_pass: string
-            pass: string
-            c_pass: string
+            old_pass: string;
+            pass: string;
+            c_pass: string;
         } = {
+            old_pass: "",
+            pass: "",
+            c_pass: ""
         };
-        Object.values(formData).forEach(elem => {
-            const key = Object.keys(formData).find(key => formData[key] === elem)
-            if (elem.indexOf(" ") >= 0) {
-                newErrors[key] = `Ce champs ne peut pas contenir d'espace.`
+
+        let hasError = false;
+
+        for (const key in formData) {
+            if (Object.prototype.hasOwnProperty.call(formData, key)) {
+                const elem = formData[key];
+                if (elem.indexOf(" ") >= 0) {
+                    newErrors[key as keyof typeof formData] = `Ce champ ne peut pas contenir d'espace.`;
+                    hasError = true;
+                }
+                if (elem === "") {
+                    newErrors[key as keyof typeof formData] = `Ce champ ne peut pas être vide.`;
+                    hasError = true;
+                }
             }
-            if (elem === "") {
-                newErrors[key] = `Ce champs ne peut pas être vide.`
-            }
-        })
-        if (pass !== c_pass) {
-            newErrors.pass = "Le mot de passe et celui de confirmation ne corresponde pas."
         }
-        seterrors(newErrors)
-        return Object.keys(newErrors).length > 0;
-    }
+
+        if (pass !== c_pass) {
+            newErrors.pass = "Le mot de passe et celui de confirmation ne correspondent pas.";
+            hasError = true;
+        }
+
+        seterrors(newErrors);
+        return hasError;
+    };
     return (
         <ClientApplication>
             <title>Changement du mot de passe</title>
@@ -110,7 +125,11 @@ export default function Page() {
                                 <input onChange={changeHandler} type="password" name="c_pass" value={formData.c_pass} id="c_pass" className="bg-gray-200 p-1.5 rounded-[calc(0.5rem-1px)] text-center" />
                             </div>
                             <p className="text-sm text-red-400 font-bold text-wrap w-72 text-center">{errors.c_pass}</p>
-                            <input type="submit" value={`${!loading ? 'Enregistrer' : 'Chargement...'}`} className={`bg-custom_orange text-white p-1.5 rounded-lg cursor-pointer ${!loading ? 'opacity-100' : 'opacity-85'}`} />
+                            {!loading ? (
+                                <input type="submit" value={`Enregistrer`} className={`bg-custom_orange text-white p-1.5 rounded-lg cursor-pointer`} />
+                            ) : (
+                                <p className={`bg-custom_orange text-white p-1.5 rounded-lg cursor-not-allowed animate-pulse`}>Chargement...</p>
+                            )}
                         </form>
                     </div>
                 </div>

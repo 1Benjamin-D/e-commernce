@@ -17,9 +17,11 @@ export default function Page() {
         setFormData({ ...formData, [e.target.name]: e.target.value })
         setErrors({ ...errors, [e.target.name]: "" })
     }
-    const submitHandler = async (e) => {
+    const [loading, setLoading] = useState(false);
+    const submitHandler = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         if (validate()) {
+            setLoading(true)
             const response = await fetch('/api/modifyemail', {
                 method: 'POST',
                 headers: {
@@ -28,9 +30,8 @@ export default function Page() {
                 body: JSON.stringify({ ...formData, user_token: localStorage.getItem('token') })
             })
             const data = await response.json();
-            console.log(data);
             if (!data.success) {
-                router.push('/account?error=' + data.message)
+                setLoading(false)
             }
             else {
                 localStorage.removeItem('token')
@@ -43,12 +44,14 @@ export default function Page() {
         const { email } = formData;
         const newErrors: {
             email: string
-        } = {}
+        } = {
+            email: ""
+        }
         if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email)) {
             newErrors.email = "Le format de l'email n'est pas valide."
         }
         setErrors(newErrors)
-        return Object.keys(newErrors).length >= 0
+        return newErrors.email === ""
     }
     return (
         <ClientApplication>
@@ -61,7 +64,11 @@ export default function Page() {
                                 <input onChange={changeHandler} type="text" name="email" value={formData.email} id="email" className="bg-gray-200 p-1.5 rounded-[calc(0.5rem-1px)] text-center" />
                             </div>
                             <p className="text-sm text-red-400 font-bold">{errors.email}</p>
-                            <input type="submit" value="Enregistrer" className="bg-custom_orange text-white p-1.5 rounded-lg cursor-pointer" />
+                            {!loading ? (
+                                <input type="submit" value={`Enregistrer`} className={`bg-custom_orange text-white p-1.5 rounded-lg cursor-pointer`} />
+                            ) : (
+                                <p className={`bg-custom_orange text-white p-1.5 rounded-lg cursor-not-allowed animate-pulse`}>Chargement...</p>
+                            )}
                         </form>
                     </div>
                 </div>

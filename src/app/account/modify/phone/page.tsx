@@ -13,14 +13,16 @@ export default function Page() {
     const [errors, seterrors] = useState({
         tel: ""
     });
-    const changeHandler = (e) => {
+    const changeHandler = (e: { target: { name: any; value: any; }; }) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
         seterrors({ ...errors, [e.target.name]: "" })
     }
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const submitHandler = async (e) => {
+    const submitHandler = async (e: { preventDefault: () => void; }) => {
         e.preventDefault()
         if (!validate()) {
+            setLoading(true)
             const response = await fetch('/api/modifyphone', {
                 method: 'POST',
                 body: JSON.stringify({ ...formData, user_token: localStorage.getItem('token') }),
@@ -34,19 +36,24 @@ export default function Page() {
                 router.push('/login?message=' + data.message)
                 return;
             }
+            else {
+                setLoading(false)
+            }
         }
 
     }
     const validate = () => {
         const newErrors: {
             tel: string
-        } = {};
+        } = {
+            tel: ""
+        };
         const regex = new RegExp('^0[1-6]{1}(([0-9]{2}){4})|((\\s[0-9]{2}){4})|((-[0-9]{2}){4})$')
         if (!regex.test(formData.tel)) {
             newErrors.tel = "Le numéro de téléphone n'est pas valide."
         }
         seterrors(newErrors)
-        return Object.keys(newErrors).length > 0;
+        return newErrors.tel === "";
     }
     return (
         <ClientApplication>
@@ -60,7 +67,11 @@ export default function Page() {
                                 <input onChange={changeHandler} type="tel" name="tel" value={formData.tel} id="tel" className="bg-gray-200 p-1.5 rounded-[calc(0.5rem-1px)] text-center" />
                             </div>
                             <p className="text-sm text-red-400 font-bold">{errors.tel}</p>
-                            <input type="submit" value="Enregistrer" className="bg-custom_orange text-white p-1.5 rounded-lg cursor-pointer" />
+                            {!loading ? (
+                                <input type="submit" value={`Enregistrer`} className={`bg-custom_orange text-white p-1.5 rounded-lg cursor-pointer`} />
+                            ) : (
+                                <p className={`bg-custom_orange text-white p-1.5 rounded-lg cursor-not-allowed animate-pulse`}>Chargement...</p>
+                            )}
                         </form>
                     </div>
                 </div>
