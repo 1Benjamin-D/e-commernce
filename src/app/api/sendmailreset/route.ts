@@ -20,12 +20,9 @@ export async function POST(req: NextRequest) {
                 status: 404
             })
         }
-        const expirationTime = new Date();
-        expirationTime.setHours(expirationTime.getHours() + 1);
         const user_token = jwt.sign({
-            userId: accountExist.id,
-            exp: expirationTime.getTime() / 1000
-        }, process.env.JWT_SECRET!);
+            userId: accountExist.id
+        }, process.env.JWT_SECRET!, { expiresIn: '1h' });
         let transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
             port: 587,

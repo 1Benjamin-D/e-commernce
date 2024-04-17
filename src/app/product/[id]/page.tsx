@@ -1,8 +1,8 @@
 'use client'
 import AddToCart from "@/components/AddToCart";
 import Toaster from "@/components/Toaster";
+import ClientApplication from "@/components/clientapplication";
 import { cryptPassword } from "@/utils/bcrypt";
-import { validatetoken } from "@/utils/validatetoken";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import Head from "next/head";
 import Image from "next/image";
@@ -41,13 +41,6 @@ export default function Page(req: Params) {
         type: string;
     }
     const [toasterItems, setToasterItems] = useState<Array<ToasterItem>>([])
-    useEffect(() => {
-        if (validatetoken() !== undefined) {
-            if (validatetoken()!.expired) {
-                router.push("/");
-            }
-        }
-    }, [router]);
     useEffect(() => {
         if (toasterItems.length >= 5) {
             setToasterItems(prevToasterItems => {
@@ -121,7 +114,7 @@ export default function Page(req: Params) {
     }
     if (!isLoading) {
         return (
-            <>
+            <ClientApplication>
                 <div className="mobile:hidden flex min-h-dvh max-h-fit justify-center items-center">
                     <div className="mobile:hidden flex justify-around items-center">
                         <div className="flex flex-col items-center gap-10">
@@ -196,7 +189,7 @@ export default function Page(req: Params) {
                 <Head>
                     <title>{article!.product_name}</title>
                 </Head>
-            </>
+            </ClientApplication>
         )
     } else {
         return (

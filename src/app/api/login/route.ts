@@ -47,20 +47,15 @@ export async function POST(req: NextRequest) {
                 });
             }
         });
-
-        const expirationTime = new Date();
-        expirationTime.setHours(expirationTime.getHours() + 1);
         const token = jwt.sign({
-            userId: accountExist.id,
-            exp: expirationTime.getTime() / 1000
-        }, process.env.JWT_SECRET!);
+            userId: accountExist.id
+        }, process.env.JWT_SECRET!, { expiresIn: '1h' });
         return res.json(
             {
                 success: true,
                 type: "success",
                 message: "Connexion réussie.",
-                token: token,
-                expiresIn: expirationTime.getTime()
+                token: token
             },
             {
                 status: 200
