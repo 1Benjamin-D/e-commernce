@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${Luciole_regular.variable} font-Luciole_Regular`}>
+            <body className={`${Luciole_regular.variable} font-Luciole_Regular lg:overflow-x-hidden m-5 mg:m-0`}>
                 <Navbar />
                 {children}
                 <Footer />

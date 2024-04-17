@@ -2,8 +2,8 @@
 
 const Footer = () => {
   return (
-    <footer>
-      <div className="font-Luciole_Regular flex flex-col text-center items-center bg-[#f8f8f8] mt-[50px] md:flex-row justify-center lg:pl-[60px] m-[-20px]">
+    <footer className=" mt-32 w-full">
+      <div className="font-Luciole_Regular flex flex-col text-center items-center bg-[#f8f8f8]  md:flex-row justify-center lg:pl-[60px] m-[-20px]">
         <div className="flex flex-col">
           <a href="" className="mt-[10px]">Accueil</a>
           <a href="" className="mt-[10px]">Catégories</a>
