@@ -33,7 +33,9 @@ export default function Page() {
                 router.push('/account?error=' + data.message)
             }
             else {
-
+                localStorage.removeItem('token')
+                router.push('/login?message=' + data.message)
+                return;
             }
         }
     }
