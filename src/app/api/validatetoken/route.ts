@@ -13,10 +13,12 @@ export async function POST(req: NextRequest) {
         }
     })
     let { user_token, user_token_params } = await req.json();
-    if (user_token !== user_token_params) {
-        return res.json({ success: false, message: 'Token and token url not the same.' }, {
-            status: 401
-        })
+    if (user_token && user_token_params) {
+        if (user_token !== user_token_params) {
+            return res.json({ success: false, message: 'Token and token url not the same.' }, {
+                status: 401
+            })
+        }
     }
     const { exp } = jwt.decode(user_token)
     let currentTime = Date.now() / 1000
