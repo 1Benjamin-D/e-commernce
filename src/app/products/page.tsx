@@ -57,6 +57,7 @@ const Products: React.FC<ProductsProps> = ({ selectedCategoryId, selectedSubCate
         fetchProducts();
     }, [selectedCategoryId, selectedSubCategoryId]);
 
+
     if (!isloading || !products) {
         const loadingCards = Array.from({ length: 60 }, (_, index) => (
             <div key={index} className="product-card">
@@ -75,32 +76,31 @@ const Products: React.FC<ProductsProps> = ({ selectedCategoryId, selectedSubCate
         <div
             className="font-Luciole_Regular flex flex-col items-center mt-[50px] lg:flex-row lg:justify-around lg:flex-wrap gap-4 m-4">
             {products && products.map((product) => (
-                <Link key={product.id} href={`/product/${product.id}`}>
-                    <div
-                        className="flex flex-col items-center bg-gradient-to-b from-firstStepGradient via-secondStepGradient to-thirdStepGradient p-[2px] rounded-[20px] w-[250px] h-[350px] px-[30px] py-[20px] mt-6 relative">
-                        {product.is_sale && <Image src="/Images/promo.png" alt="promotion" width={1000} height={1000}
-                            className="absolute right-[-33px] top-[-35px] w-[100px] z-10" />}
-                        <Image src={product.product_image} alt={product.product_name} width={1000} height={1000}
-                            className="w-36" />
-                        <h2 className="mt-3">{product.product_name}</h2>
-                        <p className="mt-3">
-                            {product.is_sale ? (
-                                <>
-                                    <span className="line-through">{product.product_price.toFixed(2)}€ </span>
-                                    <span>({product.sale_percent}%) </span>
-                                    <span
-                                        className="text-red-500">{((100 - Number(product.sale_percent)) / 100 * product.product_price).toFixed(2)}€</span>
-                                </>
-                            ) : (
-                                <span>{product.product_price.toFixed(2)}€</span>
-                            )}
-                        </p>
-                        <button type="button"><Image src='/Images/Add to cart home.png' alt="add_to_cart" width={1000}
-                            height={1000} className=" w-[70px] h-[50px] mt-3 " /></button>
-                    </div>
-                </Link>
-            ))}
-        </div>
+                <div className="relative mt-6 flex gap-3" key={product.id}>
+                    <Link href={`/product/${product.id}`} className="flex flex-col items-center" >
+                        <div className="flex flex-col items-center bg-gradient-to-b from-firstStepGradient via-secondStepGradient to-thirdStepGradient p-[2px] rounded-[20px] w-[250px] h-[350px] px-[30px] py-[20px] relative" >
+                            {product.is_sale && <Image src="/Images/promo.png" alt="promotion" width={1000} height={1000}
+                                className="absolute right-[-33px] top-[-35px] w-[100px] z-10" />}
+                            <Image src={product.product_image} alt={product.product_name} width={1000} height={1000} className="w-36" />
+                            <h2 className="mt-3">{product.product_name}</h2>
+                            <p className="mt-3">
+                                {product.is_sale ? (
+                                    <>
+                                        <span className="line-through">{product.product_price.toFixed(2)}€ </span>
+                                        <span>({product.sale_percent}%) </span>
+                                        <span className="text-red-500">{((100 - Number(product.sale_percent)) / 100 * product.product_price).toFixed(2)}€</span>
+                                    </>
+                                ) : (
+                                    <span>{product.product_price.toFixed(2)}€</span>
+                                )}
+                            </p>
+                        </div>
+                    </Link>
+                    <button type="button"><Image src='/Images/Add to cart home.png' alt="add_to_cart" width={1000} height={1000} className=" w-[70px] h-[50px] mt-3 absolute left-[36%] top-[70%]" /></button>
+                </div>
+            ))
+            }
+        </div >
     );
 };
 
