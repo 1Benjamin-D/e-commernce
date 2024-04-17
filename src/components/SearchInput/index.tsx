@@ -64,6 +64,21 @@ export function SearchInput() {
     setSuggestions([]);
   };
 
+  const renderHighlightedText = (text: string, highlight: string) => {
+    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return (
+      <span>
+        {parts.map((part, index) =>
+          part.toLowerCase() === highlight.toLowerCase() ? (
+            <mark key={index}>{part}</mark>
+          ) : (
+            part
+          )
+        )}
+      </span>
+    );
+  };
+
   const renderSuggestions = () => {
     if (suggestions.length > 0) {
       return (
@@ -72,14 +87,14 @@ export function SearchInput() {
             <div key={suggestion.product_name} onClick={() => handleSuggestionClick(suggestion)}>
               <Link href={`/product/${suggestion.id}`} className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center justify-around border-t-2 border-double">
                 <Image src={suggestion.product_image} alt={suggestion.product_name} width={100} height={100} />
-                <span className="ml-2">{suggestion.product_name}</span>
+                <span>{renderHighlightedText(suggestion.product_name, inputValue)}</span>
               </Link>
             </div>
           ))}
         </div>
       );
     }
-
+    return null;
   };
 
   return (
