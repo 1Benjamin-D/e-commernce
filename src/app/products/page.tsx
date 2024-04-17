@@ -1,5 +1,6 @@
 'use client'
 
+import LoadingP from "@/components/loadingP";
 import { cryptPassword } from "@/utils/bcrypt";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +24,7 @@ interface ProductsProps {
 
 const Products: React.FC<ProductsProps> = ({ selectedCategoryId, selectedSubCategoryId }) => {
     const [products, setProducts] = useState<Product[] | null>(null);
+    const [isloading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -30,9 +32,9 @@ const Products: React.FC<ProductsProps> = ({ selectedCategoryId, selectedSubCate
                 const response = await fetch('/api/products', {
                     method: "GET",
                     headers: {
-                      "api-key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
+                        "api-key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
                     },
-                  });
+                });
                 if (response.ok) {
                     const data: Product[] = await response.json();
                     const filteredProducts = data.filter((product) => {
@@ -45,6 +47,7 @@ const Products: React.FC<ProductsProps> = ({ selectedCategoryId, selectedSubCate
                         return true;
                     });
                     setProducts(filteredProducts);
+                    setLoading(true);
                 }
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -54,11 +57,25 @@ const Products: React.FC<ProductsProps> = ({ selectedCategoryId, selectedSubCate
         fetchProducts();
     }, [selectedCategoryId, selectedSubCategoryId]);
 
+    if (!isloading || !products) {
+        const loadingCards = Array.from({ length: 60 }, (_, index) => (
+            <div key={index} className="product-card">
+                <LoadingP />
+            </div>
+        ));
+
+        return (
+            <div className="font-Luciole_Regular flex flex-col items-center mt-[50px] lg:flex-row lg:justify-around lg:flex-wrap gap-4 m-4">
+                {loadingCards}
+            </div>
+        );
+    }
+
     return (
         <div
             className="font-Luciole_Regular flex flex-col items-center mt-[50px] lg:flex-row lg:justify-around lg:flex-wrap gap-4 m-4">
             {products && products.map((product) => (
-                <Link key={product.id} href={`/${product.id}`}>
+                <Link key={product.id} href={`/product/${product.id}`}>
                     <div
                         className="flex flex-col items-center bg-gradient-to-b from-firstStepGradient via-secondStepGradient to-thirdStepGradient p-[2px] rounded-[20px] w-[250px] h-[350px] px-[30px] py-[20px] mt-6 relative">
                         {product.is_sale && <Image src="/Images/promo.png" alt="promotion" width={1000} height={1000}

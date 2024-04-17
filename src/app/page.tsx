@@ -1,8 +1,8 @@
 'use client'
-import React, {useState} from "react";
-import Products from "./products/page";
 import Filters from "@/components/Filters";
 import { SearchInput } from "@/components/SearchInput";
+import React, { Suspense, useState } from "react";
+import Products from "./products/page";
 
 const Home: React.FC = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -23,24 +23,24 @@ const Home: React.FC = () => {
   const handleSubCategoryChange = (subCategoryId: number | null) => {
     if (subCategoryId === selectedSubCategoryId) {
       setSelectedSubCategoryId(null);
-    }else{
+    } else {
       setSelectedSubCategoryId(subCategoryId);
     }
   };
 
   return (
     <main>
-      <Filters
-        onCategoryChange={handleCategoryChange}
-        onSubCategoryChange={handleSubCategoryChange}
-      />
-      <div className="lg:hidden">
-        <SearchInput/>
-      </div>
-      <Products
-        selectedCategoryId={selectedCategoryId}
-        selectedSubCategoryId={selectedSubCategoryId}
-      />
+        <Filters
+          onCategoryChange={handleCategoryChange}
+          onSubCategoryChange={handleSubCategoryChange}
+        />
+        <div className="lg:hidden">
+          <SearchInput />
+        </div>
+        <Products
+          selectedCategoryId={selectedCategoryId}
+          selectedSubCategoryId={selectedSubCategoryId}
+        />
     </main>
   );
 };

@@ -13,7 +13,7 @@ export default function Navbar() {
     <nav className="relative p-4 text-or font-Orienta_Regular mb-[38px]">
       <div className="flex items-center justify-between">
         <div className="flex items-center mr-6">
-          <Link href={"./"}>
+          <Link href={"../"}>
             <Image src="/Images/logo-ecommernce.png" alt="Logo" className="h-16 w-auto" width={75} height={73} />
           </Link>
           <div className="hidden lg:ml-[100px] lg:flex md:ml-[20px]">

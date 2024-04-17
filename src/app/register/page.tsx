@@ -139,7 +139,7 @@ export default function Page() {
         }
     };
     return (
-        <main className="relative h-fit p-10 flex justify-center items-center">
+        <main className="relative h-fit  flex justify-center items-center">
             <title>Inscription</title>
             <div className="flex flex-col justify-center items-center gap-3">
                 <p className="text-3xl text-custom_red">Inscription</p>
