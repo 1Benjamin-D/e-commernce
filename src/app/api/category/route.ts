@@ -20,7 +20,6 @@ export async function GET(req: Request) {
 
     try {
         const categoryData = await getCategory();
-        console.log("data server ", categoryData);
         if (!categoryData) {
             return NextResponse.json(
                 { error: "Aucune catégorie(s) trouvée(s)." },
