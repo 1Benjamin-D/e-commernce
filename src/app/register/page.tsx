@@ -155,7 +155,7 @@ export default function Page() {
                                     type={`${!showPassword ? 'password' : 'text'}`} onChange={onChange}
                                     value={formData.password} error={errors.password} />
                                 <Image alt="show-password"
-                                    src={`${!showPassword ? '../images/eye.svg' : '../images/eye-slash.svg'}`}
+                                    src={`${!showPassword ? '../Images/eye.svg' : '../Images/eye-slash.svg'}`}
                                     width="100" height="0"
                                     className="absolute h-7 w-auto top-[48px] right-8 cursor-pointer"
                                     onClick={clickHandler}></Image>
@@ -166,7 +166,7 @@ export default function Page() {
                                     onChange={onChange} value={formData.confirm_password}
                                     error={errors.confirm_password} />
                                 <Image alt="show-confirm_password"
-                                    src={`${!showConfirmPassword ? '../images/eye.svg' : '../images/eye-slash.svg'}`}
+                                    src={`${!showConfirmPassword ? '../Images/eye.svg' : '../Images/eye-slash.svg'}`}
                                     width="100" height="0"
                                     className="absolute h-7 w-auto top-[48px] right-8 cursor-pointer" priority
                                     onClick={clickHandler}></Image>

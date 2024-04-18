@@ -7,7 +7,7 @@ interface ButtonProps {
 export default function RemoveButton({ onClickEvent }: ButtonProps) {
     return (
         <button onClick={onClickEvent}>
-            <Image alt="remove-button" src={"/images/remove.svg"} width={100} height={0} className="w-12 h-auto" />
+            <Image alt="remove-button" src={"/Images/remove.svg"} width={100} height={0} className="w-12 h-auto" />
         </button>
     )
 }
