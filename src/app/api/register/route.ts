@@ -1,7 +1,7 @@
-import {NextApiRequest, NextApiResponse} from "next";
-import {cryptPassword} from "@/utils/bcrypt";
+import { NextRequest, NextResponse } from "next/server";
+import * as bcrypt from 'bcryptjs'
 import prisma from "@/libs/prismadb";
-import bcrypt from "bcryptjs";
+import { cryptPassword } from "@/utils/bcrypt";
 
 interface Form {
     username: string
@@ -11,23 +11,23 @@ interface Form {
     numero_phone: string
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== "POST") {
-        res.setHeader('Method-Allowed', 'POST');
-        res.status(405).json({success: false, type: "error", message: "Method Not Allowed"})
-    }
-    let {username, email, password, numero_phone} = JSON.parse(req.body);
-
-    const apiKey = req.headers['api-key']!;
+export async function POST(req: NextRequest) {
+    const res = NextResponse;
+    const apiKey = req.headers.get('api-key');
     if (typeof apiKey === "string") {
         const apiKeyCorrect = await bcrypt.compare(process.env.API_KEY!, apiKey);
         if (!apiKeyCorrect) {
-            return res.status(403).json({success: false, type: "error", message: "Forbidden."});
+            return res.json(JSON.stringify({ success: false, type: "error", message: "Forbidden." }), {
+                status: 401
+            })
         }
     }
-
-    if (!validateData(JSON.parse(req.body))) {
-        res.status(400).json({success: false, type: "error", message: "Veuillez vérifier les informations entré dans le formulaire."})
+    const body = await req.json();
+    const { username, email, password, numero_phone } = body
+    if (!validateData(body)) {
+        return res.json(JSON.stringify({ success: false, type: "error", message: "Veuillez vérifier les informations entré dans le formulaire." }), {
+            status: 400
+        })
     }
     const hashedPassword = await cryptPassword(password);
     const emailExist = await prisma.utilisateur.findFirst({
@@ -37,7 +37,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
     try {
         if (emailExist) {
-            res.status(400).json({success: false, type: "error", message: "Cette adresse email existe déjà."})
+            return res.json({ success: false, type: "error", message: "Cette adresse email existe déjà." }, {
+                status: 400
+            })
         } else {
             const register = await prisma.utilisateur.create({
                 data: {
@@ -48,15 +50,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             })
             if (register) {
-                res.status(201).json({success: true, type: "success", message: "Compte créé avec succès."})
+                return res.json({ success: true, type: "success", message: "Compte créé avec succès." }, {
+                    status: 200
+                })
             }
         }
     } catch (error) {
         console.error("Une erreur est survenu lors de la creation du compte :", error)
     }
 }
-const validateData = ({username, email, password, confirm_password, numero_phone}: Form) => {
-    // @ts-ignore
+const validateData = ({ username, email, password, confirm_password, numero_phone }: Form) => {
     let newErrors: Form = {}
     if (username.indexOf(" ") >= 0) {
         newErrors.username = "Le nom d'utilisateur ne peut pas contenir d'espace."

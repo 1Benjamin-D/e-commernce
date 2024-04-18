@@ -30,17 +30,17 @@ const Home: React.FC = () => {
 
   return (
     <main>
-        <Filters
-          onCategoryChange={handleCategoryChange}
-          onSubCategoryChange={handleSubCategoryChange}
-        />
-        <div className="lg:hidden">
-          <SearchInput />
-        </div>
-        <Products
-          selectedCategoryId={selectedCategoryId}
-          selectedSubCategoryId={selectedSubCategoryId}
-        />
+      <Filters
+        onCategoryChange={handleCategoryChange}
+        onSubCategoryChange={handleSubCategoryChange}
+      />
+      <div className="lg:hidden">
+        <SearchInput />
+      </div>
+      <Products
+        selectedCategoryId={selectedCategoryId}
+        selectedSubCategoryId={selectedSubCategoryId}
+      />
     </main>
   );
 };

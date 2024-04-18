@@ -2,39 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-/*Benji*/
-body {
-  margin: 0;
-  padding: 0;
-}
+body {}
 
-#app {
-  height: 100%;
-}
-
-/*Gabin*/
 @keyframes fadeIn {
-  from {opacity: 0}
-  to {opacity: 1}
-}
-@keyframes fadeOut {
-  from {opacity: 1}
-  to {opacity: 0;}
-}
-.fade-in{
-  animation: 0.6s ease-in fadeIn;
-}
-.fade-out{
-  animation: 0.3s ease-in fadeOut;
-}
-.gradient-fill{
-  fill: url(#gradient)
-}
-@keyframes fade {
-  from { opacity: 0; } /* Opacité de départ à 0 */
-  to { opacity: 1; } /* Opacité finale à 1 */
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
 }
 
+@keyframes fadeOut {
+    from {
+        opacity: 1
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+.fade-in {
+    animation: 0.6s ease-in fadeIn;
+}
+
+.fade-out {
+    animation: 0.3s ease-in fadeOut;
+}
+
+.gradient-fill {
+    fill: url(#gradient)
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    /* Opacité de départ à 0 */
+    to {
+        opacity: 1;
+    }
+
+    /* Opacité finale à 1 */
+}
+
+/* Appliquer l'animation aux éléments */
 .toaster-item {
-  animation: fade 0.3s ease-in-out;
+    animation: fade 0.3s ease-in-out;
+    /* Utiliser l'animation 'fade' sur une durée de 0.3 seconde avec un effet d'entrée/sortie lissé */
 }

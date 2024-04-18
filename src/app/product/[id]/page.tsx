@@ -1,15 +1,38 @@
 'use client'
+import AddToCart from "@/components/AddToCart";
 import Toaster from "@/components/Toaster";
-import AddButton from "@/components/addButton";
-import RemoveButton from "@/components/removeButton";
-import Layout from "@/pages/layout";
+import ClientApplication from "@/components/clientapplication";
 import { cryptPassword } from "@/utils/bcrypt";
-import { validatetoken } from "@/utils/validatetoken";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 
-export default function Page({ params }: { params: { id: number } }) {
+export default function Page(req: Params) {
+    interface Article {
+        id: bigint
+        product_image: string
+        product_name: string
+        product_description: string
+        product_price: number
+        is_sale: string
+        ingredient: string
+    }
+    const [article, setArticle] = useState<Article>();
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+        let idProduct = req.params.id;
+        const fetchData = async () => {
+            const response = await fetch('/api/getproduct?productId=' + idProduct, {
+                method: 'GET'
+            })
+            const data = await response.json();
+            setArticle(data);
+            setIsLoading(false)
+        }
+        fetchData();
+    }, [req.params.id])
     const router = useRouter();
     const [quantity, setQuantity] = useState(1)
     const [isAddingToCart, setIsAddingToCart] = useState(false)
@@ -18,38 +41,26 @@ export default function Page({ params }: { params: { id: number } }) {
         type: string;
     }
     const [toasterItems, setToasterItems] = useState<Array<ToasterItem>>([])
-    const [article, setArticle] = useState({})
-    const [isLoading, setIsLoading] = useState(false)
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true)
-            const productId = params.id;
-            const apiUrl = process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/getproduct` : `http://localhost:3000/api/getproduct`;
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'API-Key': await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
-                },
-                body: JSON.stringify({ productId: productId })
-            })
-            const data = await response.json();
-            setArticle(data)
-            setIsLoading(false)
-        }
-        fetchData()
-    }, [params]);
-    useEffect(() => {
-        if (validatetoken() !== undefined) {
-            if (validatetoken()!.expired) {
-                router.push("/");
-            }
-        }
-    }, [router]);
     useEffect(() => {
         if (toasterItems.length >= 5) {
-            toasterItems.shift()
+            setToasterItems(prevToasterItems => {
+                const updatedToasterItems = [...prevToasterItems];
+                updatedToasterItems.shift();
+                return updatedToasterItems;
+            })
         }
-    }, [toasterItems, toasterItems.length]);
+        if (toasterItems.length > 0) {
+            const timer = setTimeout(() => {
+                setToasterItems(prevToasterItems => {
+                    const updatedToasterItems = [...prevToasterItems];
+                    updatedToasterItems.shift();
+                    return updatedToasterItems;
+                });
+            }, 2000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [toasterItems.length]);
     const clickHandler = (action: string) => {
         if (action === "add") {
             if (quantity < 99) {
@@ -72,21 +83,23 @@ export default function Page({ params }: { params: { id: number } }) {
             setIsAddingToCart(true)
             const token = localStorage.getItem("token")!;
             const response = await fetch('/api/addtocart', {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "API-Key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
+                    "api-key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
                 },
-                body: JSON.stringify({ productId: article.data.id, token: token, productQuantity: quantity })
-            });
+                body: JSON.stringify({ productId: article!.id, token: token, productQuantity: quantity }),
+            })
             type ToasterItem = {
                 type: string;
                 content: string;
             }
             const data = await response.json();
+
             const toasterItem: ToasterItem = { type: data.type, content: data.message };
             toasterItems.push(toasterItem)
         } else {
-            console.log("Vous allez trop vite")
+            const toasterItem: ToasterItem = { type: 'warning', content: 'Vous allez trop vite.' }
+            toasterItems.push(toasterItem)
             return;
         }
         setIsAddingToCart(false)
@@ -99,51 +112,36 @@ export default function Page({ params }: { params: { id: number } }) {
             return updatedToasterItems;
         });
     }
-    if (!isLoading && article.success) {
+    if (!isLoading) {
         return (
-            <main className="mt-[100px]">
+            <ClientApplication>
+                <div className="mobile:hidden flex min-h-dvh max-h-fit justify-center items-center">
                     <div className="mobile:hidden flex justify-around items-center">
                         <div className="flex flex-col items-center gap-10">
-                            <Image src={article.data.product_image} alt="test" width="100" height="0"
-                                className="w-40 h-auto"></Image>
+                            <Image src={article!.product_image} alt="test" width="200" height="0"
+                                className="w-52 h-auto"></Image>
                             <div
                                 className="flex flex-col justify-center items-center gap-2 p-2">
-                                <div
-                                    className="bg-gradient-to-br rounded-lg from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-px">
-                                    <div
-                                        className="flex flex-col justify-between items-center gap-3 bg-white rounded-[calc(0.5rem-1px)] px-3 py-2">
-                                        <div className="flex items-center justify-between gap-3 w-52">
-                                            <RemoveButton onClickEvent={() => clickHandler("remove")} />
-                                            <p>+{quantity}</p>
-                                            <AddButton onClickEvent={() => clickHandler("add")} />
-                                        </div>
-                                        <div
-                                            className="bg-gradient-to-br rounded-lg from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-px text-center">
-                                            <div className="bg-white rounded-[calc(0.5rem-1px)]">
-                                                <button className="p-2" onClick={addToCart}>Ajouter au panier</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <AddToCart quantity={quantity} clickEventAddToCart={addToCart} clickEventQuantity={clickHandler} />
                             </div>
                         </div>
                         <div className="w-1/2 flex flex-col gap-3">
                             <div
                                 className="text-xl rounded-2xl bg-gradient-to-br from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-[2px]">
                                 <div className="flex flex-col items-center gap-10 bg-white p-5 rounded-[calc(1rem-2px)]">
-                                    <p className="text-4xl">{article.data.product_name}</p>
+                                    <p className="text-4xl">{article!.product_name}</p>
                                     <div>
                                         <p className="underline">Description :</p>
-                                        <p>{article.data.product_description}</p>
+                                        <p>{article!.product_description}</p>
                                     </div>
-                                    {article.data.is_sale ? (
+                                    {article!.is_sale ? (
                                         <div className="flex gap-1">
-                                            <p className="line-through">{article.data.product_price}€</p>
-                                            <p className="text-red-500">{(article.data.product_price - (article.data.product_price * 0.20)).toFixed(2)}€</p>
+                                            <p className="line-through">{article!.product_price}€</p>
+                                            <p className="text-red-500">{(article!.product_price - (article!.product_price * 0.20)).toFixed(2)}€</p>
                                         </div>
                                     ) : (
                                         <div className="flex gap-1">
-                                            <p>{article.data.product_price}€</p>
+                                            <p>{article!.product_price}€</p>
                                         </div>
                                     )}
                                 </div>
@@ -152,56 +150,52 @@ export default function Page({ params }: { params: { id: number } }) {
                                 className="text-xl rounded-2xl bg-gradient-to-br from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-[2px]">
                                 <div className="flex flex-col gap-2 bg-white p-5 rounded-[calc(1rem-2px)]">
                                     <p className="underline">Ingrédients :</p>
-                                    <p>{article.data.ingredient}</p>
+                                    <p>{article!.ingredient}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className="hidden mobile:flex justify-center items-center min-h-dvh max-h-fit">
                     <div className="hidden mobile:flex flex-col justify-center items-center gap-5">
-                        <Image src={article.data.product_image} alt="test" width="200" height="0" priority
-                            className="w-42 h-auto"></Image>
-                        <p className="text-lg">{article.data.product_name}</p>
-                        <p className="text-center text-sm px-5">{article.data.product_description}</p>
-                        {article.data.is_sale ? (
+                        <Image src={article!.product_image} alt="test" width="200" height="0" priority
+                            className="w-62 h-auto"></Image>
+                        <p className="text-lg">{article!.product_name}</p>
+                        <p className="text-center text-sm px-5">{article!.product_description}</p>
+                        {article!.is_sale ? (
                             <div className="flex gap-1">
-                                <p className="line-through">{article.data.product_price}€</p>
-                                <p className="text-red-500">{(article.data.product_price - (article.data.product_price * 0.20)).toFixed(2)}€</p>
+                                <p className="line-through">{article!.product_price}€</p>
+                                <p className="text-red-500">{(article!.product_price - (article!.product_price * 0.20)).toFixed(2)}€</p>
                             </div>
                         ) : (
                             <div className="flex gap-1">
-                                <p>{article.data.product_price}€</p>
+                                <p>{article!.product_price}€</p>
                             </div>
                         )}
-                        <div
-                            className="bg-gradient-to-br rounded-lg from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-[2px] w-[300px]">
-                            <div
-                                className="flex flex-col justify-center items-center gap-2 p-2 bg-white rounded-[calc(0.5rem-2px)]">
-                                <div className="flex items-center justify-between gap-3 w-full">
-                                    <RemoveButton onClickEvent={() => clickHandler("remove")} />
-                                    <p>+{quantity}</p>
-                                    <AddButton onClickEvent={() => clickHandler("add")} />
-                                </div>
-                                <div
-                                    className="bg-gradient-to-br rounded-lg from-[#FF5863] via-[#FD8F50] to-[#FFC53E] p-px w-2/3 text-center">
-                                    <div className="bg-white rounded-[calc(0.5rem-1px)]">
-                                        <button className="p-2" onClick={addToCart}>Ajouter au panier</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <AddToCart quantity={quantity} clickEventAddToCart={addToCart} clickEventQuantity={clickHandler} />
                     </div>
-                    <div className="fixed mobile:w-2/3 mobile:h-fit mobile:top-5 mobile:left-1/2 mobile:transform mobile:-translate-x-1/2 bottom-5 right-5 flex flex-col gap-3">
-                        {toasterItems.map(({ content, type }, index): React.JSX.Element => {
-                            return (
-                                <Toaster key={index}
-                                    toast_index={index}
-                                    content={content}
-                                    type={type}
-                                    onClickEvent={closeToast} />
-                            );
-                        })}
-                    </div>
-            </main>
+                </div>
+                <div className="fixed mobile:w-2/3 mobile:h-fit mobile:top-5 mobile:left-1/2 mobile:transform mobile:-translate-x-1/2 bottom-5 right-5 flex flex-col gap-3">
+                    {toasterItems.map(({ content, type }, index): React.JSX.Element => {
+                        return (
+                            <Toaster key={index}
+                                toast_index={index}
+                                content={content}
+                                type={type}
+                                onClickEvent={closeToast} />
+                        );
+                    })}
+                </div>
+                <Head>
+                    <title>{article!.product_name}</title>
+                </Head>
+            </ClientApplication>
+        )
+    } else {
+        return (
+            <div>
+                <p>Loading..</p>
+            </div>
         )
     }
 }
