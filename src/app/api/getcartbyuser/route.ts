@@ -6,14 +6,16 @@ import prisma from "@/libs/prismadb";
 export async function GET(req: NextRequest) {
     const res = NextResponse
     try {
-        const apiKey = req.headers.get('api-key')
+        const { searchParams } = new URL(req.url)
+        const apiKey = searchParams.get('apiKey');
         let compare = bcrypt.compare(process.env.NEXT_PUBLIC_API_KEY!, apiKey!);
         if (!compare) {
             return res.json({}, {
                 status: 401
             })
         }
-        const user_token = req.nextUrl.searchParams.get('user_token');
+        const user_token = searchParams.get('user_token');
+
         const { userId } = jwt.decode(user_token!);
         if (!userId) {
             return res.json({}, {

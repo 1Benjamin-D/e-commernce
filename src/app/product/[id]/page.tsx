@@ -1,4 +1,5 @@
 'use client'
+import Erreur from "@/app/not-found";
 import AddToCart from "@/components/AddToCart";
 import Toaster from "@/components/Toaster";
 import ClientApplication from "@/components/clientapplication";
@@ -24,16 +25,18 @@ export default function Page(req: Params) {
     useEffect(() => {
         let idProduct = req.params.id;
         const fetchData = async () => {
-            const response = await fetch('/api/getproduct?productId=' + idProduct, {
+            let apiKey = await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!)
+            const response = await fetch(`/api/getproduct?productId=${idProduct}&apiKey=${apiKey}`, {
                 method: 'GET'
             })
             const data = await response.json();
-            setArticle(data);
+            if (data.success) {
+                setArticle(data.data);
+            }
             setIsLoading(false)
         }
         fetchData();
     }, [req.params.id])
-    const router = useRouter();
     const [quantity, setQuantity] = useState(1)
     const [isAddingToCart, setIsAddingToCart] = useState(false)
     interface ToasterItem {
@@ -112,6 +115,13 @@ export default function Page(req: Params) {
             return updatedToasterItems;
         });
     }
+    if (!article && !isLoading) {
+        return (
+            <ClientApplication>
+                <Erreur />
+            </ClientApplication>
+        )
+    }
     if (!isLoading) {
         return (
             <ClientApplication>
@@ -158,7 +168,7 @@ export default function Page(req: Params) {
                 </div>
                 <div className="hidden mobile:flex justify-center items-center min-h-dvh max-h-fit">
                     <div className="hidden mobile:flex flex-col justify-center items-center gap-5">
-                        <Image src={article!.product_image} alt="test" width="200" height="0" priority
+                        <Image src={article!.product_image} alt={article!.product_name} width="200" height="0" priority
                             className="w-62 h-auto"></Image>
                         <p className="text-lg">{article!.product_name}</p>
                         <p className="text-center text-sm px-5">{article!.product_description}</p>
@@ -193,9 +203,11 @@ export default function Page(req: Params) {
         )
     } else {
         return (
-            <div>
-                <p>Loading..</p>
-            </div>
+            <ClientApplication>
+                <div className="flex justify-center items-center min-h-dvh max-h-fit">
+                    <p className="animate-pulse">Chargement de votre produit...</p>
+                </div>
+            </ClientApplication>
         )
     }
 }

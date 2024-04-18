@@ -3,6 +3,7 @@
 import { cryptPassword } from "@/utils/bcrypt";
 import React, { useEffect, useState } from "react";
 import LoadingC from "../loadingC";
+import Image from "next/image";
 
 interface Category {
   id: number;
@@ -83,11 +84,11 @@ const Filters: React.FC<FiltersProps> = ({ onCategoryChange, onSubCategoryChange
             onClick={() => handleCategoryClick(category.id)}
             className={`${isClicked && selectedCategory !== category.id ? "hidden" : "flex"} flex-col justify-center items-center gap-3 text-center w-128 p-5 cursor-pointer`}>
             <div className="bg-gradient-to-b from-firstStepGradient via-secondStepGradient to-thirdStepGradient w-28 h-28 p-1 rounded-full">
-              <img
-                src={category.image}
-                alt=""
-                className="rounded-full"
-              />
+              <Image src={category.image}
+                alt={category.name}
+                height={0}
+                width={100}
+                className="w-[128px] h-auto rounded-full" />
             </div>
             <h2 className="text-sm font-Luciole_Regular mt-4 text-nowrap text-center">{category.name}</h2>
           </div>
@@ -98,11 +99,11 @@ const Filters: React.FC<FiltersProps> = ({ onCategoryChange, onSubCategoryChange
             {category.id_sub_cat.map((sub_cat) => (
               <div key={sub_cat.Sub_category.id} className="flex flex-col justify-center items-center text-center w-32 cursor-pointer" onClick={() => handleSubCategoryClick(sub_cat.Sub_category.id)}>
                 <div className="bg-gradient-to-b from-firstStepGradient via-secondStepGradient to-thirdStepGradient p-1 rounded-full">
-                  <img
-                    src={sub_cat.Sub_category.image}
-                    alt=""
-                    className="h-20 w-auto rounded-full"
-                  />
+                  <Image src={sub_cat.Sub_category.image}
+                    alt={sub_cat.Sub_category.name}
+                    height={0}
+                    width={100}
+                    className="w-20 h-auto rounded-full" />
                 </div>
                 <h2 className="text-sm font-Luciole_Regular mt-4 text-nowrap text-center">{sub_cat.Sub_category.name}</h2>
               </div>

@@ -42,7 +42,7 @@ export default function ClientApplication({ children }) {
 
         }
         fetchData()
-    }, [router]);
+    }, [router, path]);
     return (
         <>
             {children}
