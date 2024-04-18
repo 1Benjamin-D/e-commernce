@@ -4,7 +4,7 @@ import { CustomInput } from "@/components/input";
 import Link from "next/link";
 import Image from "next/image";
 import { cryptPassword } from "@/utils/bcrypt";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Toaster from "@/components/Toaster";
 import ClientApplication from "@/components/clientapplication";
 

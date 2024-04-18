@@ -2,7 +2,6 @@
 import Toaster from "@/components/Toaster";
 import { CustomInput } from "@/components/input";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
@@ -16,20 +15,6 @@ export default function Page() {
     const changeHandler = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
-    const searchParams = useSearchParams();
-    useEffect(() => {
-        const error = searchParams.get('error')
-
-        if (error) {
-            type ToasterItem = {
-                type: string;
-                content: string;
-            }
-            const toasterItem: ToasterItem = { type: "error", content: error };
-            setToasterItems(prevToasterItems => [...prevToasterItems, toasterItem]);
-        }
-
-    }, [searchParams]);
     const submitHandler = async (e) => {
         e.preventDefault();
         if (validateForm()) {

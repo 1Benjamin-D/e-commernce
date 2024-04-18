@@ -80,11 +80,9 @@ const Cart: React.FC = () => {
           router.push('/login')
           return;
         }
-        const response = await fetch(`/api/getcartbyuser?user_token=${localStorage.getItem('token')}`, {
-          method: "GET",
-          headers: {
-            "api-key": await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!),
-          }
+        const apiKey = await cryptPassword(process.env.NEXT_PUBLIC_API_KEY!);
+        const response = await fetch(`/api/getcartbyuser?user_token=${localStorage.getItem('token')}&apiKey=${apiKey}`, {
+          method: "GET"
         });
         if (!response.ok) {
           const errorData = await response.json();
@@ -119,7 +117,7 @@ const Cart: React.FC = () => {
     };
 
     loadProducts();
-  }, []);
+  }, [router]);
 
   // Fonctions pour gérer les actions sur les éléments du panier.
   const removeItemFromCart = async (id: number) => {
